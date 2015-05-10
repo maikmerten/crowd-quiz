@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="x-ua-compatible" content="IE=Edge"/> 
+<meta charset="utf-8"/>
+<title>CrowdQuiz</title>
+<link rel="stylesheet" type="text/css" href="styles.css"/>
+</head>
+<body>
+
+<div id="centercol">
+	<p id="questiontext">
+	Wählen Sie ein Quiz
+	<p>
+
+	<ul id="optionlist"></div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/jquery.js"></script>
+<script src="/shared.js"></script>
+<script>
+var socket = io();
+var optionselected = 0;
+var quizinstance = "quiz1";
+var discover = 1;
+
+socket.emit("JoinRoom", ["clients"]);
+discoverQuizzes();
+
+function getId() {
+	var id = localStorage.getItem("quizClientId");
+	if(!id) {
+		id = socket.id;
+		localStorage.setItem("quizClientId", id);
+	}
+	return id;
+}
+
+// event handler that fires when selecting an option
+function clickOption() {
+	if(optionselected) {
+		return;
+	}
+	optionselected = 1;
+
+	var option = $(this);
+	option.toggleClass("selected", true);
+
+	var answer = {
+		"from" : getId(),
+		"quizinstance" : quizinstance,
+		"index" : option.attr("originalindex")
+	};
+
+	socket.emit("QuizAnswer", answer);
+}
+
+function requestQuestion() {
+	var request = {
+		"quizinstance" : quizinstance
+	};
+
+	socket.emit("RequestQuestion", request);
+}
+
+
+function discoverQuizzes() {
+	socket.emit("DiscoveryRequest");
+}
+
+// display discovered quizzes
+socket.on("DiscoveryResponse", function(response) {
+	if(!discover) {
+		return;		// ignore discovery messages when not discovering
+	}
+
+	var li = $("<li>");
+	li.text(response.quizname);
+	li.toggleClass("quiz", true);
+	li.click(function() {
+		discover = 0;
+		quizinstance = response.quizinstance;
+		socket.emit("JoinRoom", ["clients." + response.quizinstance]);
+		$("#questiontext").text("Warte auf Quiz-Frage");
+		$("#optionlist").empty();
+		requestQuestion();
+	});
+
+	$("#optionlist").append(li);
+
+});
+
+// display incoming quiz question
+socket.on('QuizQuestion', function(question) {
+	optionselected = 0;
+
+	displayQuestion(question, clickOption);
+});
+
+// show correct answer to question
+socket.on("RevealCorrect", function() {
+	optionselected = 1; // block selection afterwards
+	revealCorrect();
+});
+
+socket.on('ping', function(data){
+	socket.emit('pong', data);
+});    
+
+
+</script>
+
+</body>
+</html>

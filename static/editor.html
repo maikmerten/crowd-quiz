@@ -1,0 +1,224 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="x-ua-compatible" content="IE=Edge"/> 
+<meta charset="utf-8"/>
+<title>CrowdQuiz - Editor</title>
+
+<style>
+
+body {
+	font-family: Arial,sans-serif;
+}
+
+select#questions {
+	width: 100%;
+}
+
+div.controls {
+	background-color: rgb(220,220,220);
+	padding:5px;
+
+}
+
+div.editor {
+	background-color: rgb(150,150,180);
+	padding: 5px;
+}
+
+div.editor input {
+	width: 90%;
+	margin-bottom: 3px;
+}
+
+div.editor textarea {
+	width: 90%;
+	margin-bottom: 6px;
+}
+
+
+input.correct {
+	background-color: rgb(200,255,200);
+}
+
+input.incorrect {
+	background-color: rgb(255,200,200);
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="controls">
+<button id="newquestion" onClick="newQuiz();">Neues Quiz</button>
+<input type="file" id="files" name="files[]" onChange="loadFile();"/>
+<a href="" id="savelink" download="quiz.json" onClick="saveToFile();"><button type="button">Speichere Quiz in Datei</button></a>
+</div>
+
+<div>
+<select id="questions" size="10" onChange="onQuestionSelect();"></select>
+</div>
+
+<div class="controls">
+<button id="newquestion" onClick="newQuestion();">Neue Frage</button>
+<button id="removequestion" onClick="removeQuestion();">Lösche Frage</button>
+<button id="questionup" onClick="upQuestion();">Frage hoch</button>
+<button id="questiondown" onClick="downQuestion();">Frage runter</button>
+</div>
+
+
+<div class="editor">
+<textarea id="text" cols="80" onChange="readQuestionEditor();"></textarea><br/>
+<input type="text" id="option0" class="correct" onChange="readQuestionEditor();"/><br/>
+<input type="text" id="option1" class="incorrect" onChange="readQuestionEditor();"/><br/>
+<input type="text" id="option2" class="incorrect" onChange="readQuestionEditor();"/><br/>
+<input type="text" id="option3" class="incorrect" onChange="readQuestionEditor();"/><br/>
+</div>
+
+<script>
+
+// JavaScript without nice helpers such as jQuery to ensure this works stand-alone
+
+var questions = [];
+var question = {};
+
+newQuiz();
+
+
+function listQuestions() {
+	var html = "";
+	document.getElementById("questions").innerHTML = html;
+
+	for(var i = 0; i < questions.length; ++i) {
+		html += "<option value='" + i + "'>";
+		html += questions[i].text;
+		html += "</option>";
+	}
+	
+	document.getElementById("questions").innerHTML = html;
+}
+
+
+function emptyQuestionEditor() {
+	document.getElementById("text").value = "";
+	for(var i = 0; i < 4; ++i) {
+		document.getElementById("option" + i).value = "";
+	}
+}
+
+function fillQuestionEditor() {
+	emptyQuestionEditor();
+	document.getElementById("text").value = question.text;
+	for(var i = 0; i < question.options.length; ++i) {
+		document.getElementById("option" + i).value = question.options[i];
+	}
+}
+
+function readQuestionEditor() {
+	question.text = document.getElementById("text").value;
+	for(var i = 0; i < question.options.length; ++i) {
+		question.options[i] = document.getElementById("option" + i).value;
+	}
+	listQuestions();
+}
+
+
+function onQuestionSelect() {
+	var selected = document.getElementById("questions").value;
+	question = questions[selected];
+	fillQuestionEditor();
+}
+
+function newQuiz() {
+	questions = [];
+	listQuestions();
+	emptyQuestionEditor();
+}
+
+
+function newQuestion() {
+	question = {
+		"text" : "Fragetext.",
+		"options" : [ "richtige Antwort", "falsche Antwort 1", "falsche Antwort 2", "falsche Antwort 3" ]
+	}
+
+	questions[questions.length] = question;
+	listQuestions();
+	fillQuestionEditor();
+	document.getElementById("questions").value = questions.length - 1;
+}
+
+
+function removeQuestion() {
+	var selected = parseInt(document.getElementById("questions").value);
+	questions.splice(selected, 1);
+	listQuestions();
+	emptyQuestionEditor();
+}
+
+function upQuestion() {
+	var selected = parseInt(document.getElementById("questions").value);
+	if(selected < 1) {
+		return;
+	}
+
+	question = questions[selected];
+	questions[selected] = questions[selected - 1];
+	questions[selected - 1] = question;
+
+	listQuestions();
+	fillQuestionEditor();
+	document.getElementById("questions").value = selected - 1;
+}
+
+function downQuestion() {
+	var selected = parseInt(document.getElementById("questions").value);
+	if(selected >= questions.length - 1) {
+		return;
+	}
+
+
+	question = questions[selected];
+	questions[selected] = questions[selected + 1];
+	questions[selected + 1] = question;
+
+	listQuestions();
+	fillQuestionEditor();
+	document.getElementById("questions").value = selected + 1;
+}
+
+function loadFile() {
+	var files = document.getElementById("files").files;
+	if(files.length < 1) {
+		return;
+	}
+
+	var reader = new FileReader();
+    // Closure to capture the file information.
+    reader.onload = (function (theFile) {
+        return function (e) { 
+			questions = JSON.parse(e.target.result);
+			listQuestions();
+            console.log(questions);
+        };
+    })(files[0]);
+
+	reader.readAsText(files[0], "UTF-8");
+	emptyQuestionEditor();
+}
+
+
+function saveToFile() {
+	var string = JSON.stringify(questions);
+
+	var link = document.getElementById("savelink");
+	link.href = 'data:text/json;charset=utf-8,' + encodeURIComponent(string);
+
+	return true;
+}
+
+</script>
+
+</body>
+</html>
