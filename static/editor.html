@@ -195,7 +195,7 @@ function loadFile() {
 	}
 
 	var reader = new FileReader();
-    // Closure to capture the file information.
+	// Closure to capture the file information.
 	reader.onload = (function (theFile) {
 		return function (e) { 
 			questions = JSON.parse(e.target.result);
