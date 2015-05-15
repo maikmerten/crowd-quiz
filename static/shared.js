@@ -40,6 +40,15 @@ function displayQuestion(question, clickfunction) {
 			option.click(clickfunction);
 		}
 	}
+
+	var imgelem = $("#questionimage");
+	if(question.image) {
+		imgelem.attr("src", question.image);
+		imgelem.css("display", "block");
+	} else {
+		imgelem.css("display", "none");
+	}
+
 }
 
 function revealCorrect() {

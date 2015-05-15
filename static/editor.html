@@ -65,6 +65,7 @@ input.incorrect {
 <button id="removequestion" onClick="removeQuestion();">Lösche Frage</button>
 <button id="questionup" onClick="upQuestion();">Frage hoch</button>
 <button id="questiondown" onClick="downQuestion();">Frage runter</button>
+<button id="deleteimage" onClick="deleteImage();">Bild zur Frage entfernen</button>
 </div>
 
 
@@ -75,6 +76,12 @@ input.incorrect {
 <input type="text" id="option2" class="incorrect" onChange="readQuestionEditor();"/><br/>
 <input type="text" id="option3" class="incorrect" onChange="readQuestionEditor();"/><br/>
 </div>
+
+<p>
+Zum Beifügen eines Bildes zur Frage ein Bild hierhin ziehen.
+</p>
+
+<img id="questionimage"/>
 
 <script>
 
@@ -105,6 +112,7 @@ function emptyQuestionEditor() {
 	for(var i = 0; i < 4; ++i) {
 		document.getElementById("option" + i).value = "";
 	}
+	document.getElementById("questionimage").style.display = "none";
 }
 
 function fillQuestionEditor() {
@@ -112,6 +120,10 @@ function fillQuestionEditor() {
 	document.getElementById("text").value = question.text;
 	for(var i = 0; i < question.options.length; ++i) {
 		document.getElementById("option" + i).value = question.options[i];
+	}
+	if(question.image) {
+		document.getElementById("questionimage").src = question.image;
+		document.getElementById("questionimage").style.display = "initial";
 	}
 }
 
@@ -188,6 +200,12 @@ function downQuestion() {
 	document.getElementById("questions").value = selected + 1;
 }
 
+function deleteImage() {
+	delete question.image;
+	emptyQuestionEditor();
+	fillQuestionEditor();
+}
+
 function loadFile() {
 	var files = document.getElementById("files").files;
 	if(files.length < 1) {
@@ -217,6 +235,58 @@ function saveToFile() {
 
 	return true;
 }
+
+/*
+ * Code for adding including image data
+ */
+
+var MAXWIDTH = 640;
+var MAXHEIGHT = 480;
+
+var target = document;
+target.addEventListener("dragover", function(e){e.preventDefault();}, true);
+target.addEventListener("drop", function(e){
+	e.preventDefault();
+	var file = e.dataTransfer.files[0];
+	if(!file.type.match(/image.*/)){
+		// not an image file!
+		return;
+	}
+
+	var reader = new FileReader();
+	reader.onload = function(e){
+		var image = new Image();
+		image.onload = function() {
+			if(image.width > MAXWIDTH) {
+				image.height *= MAXWIDTH / image.width;
+				image.width = MAXWIDTH;
+			}
+
+			if(image.height > MAXHEIGHT) {
+				image.width *= MAXHEIGHT / image.height;
+				image.height = MAXHEIGHT;
+			}
+
+			var canvas = document.createElement("canvas");
+			var ctx = canvas.getContext("2d");
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			canvas.width = image.width;
+			canvas.height = image.height;
+			ctx.drawImage(image, 0, 0, image.width, image.height);
+
+			if(question.text) {
+				question.image = canvas.toDataURL("image/jpeg", 0.7);
+				var imgelem = document.getElementById("questionimage");
+				imgelem.src = question.image;
+				imgelem.style.display = "initial";
+			}
+
+		};
+		image.src = e.target.result;
+	};
+	reader.readAsDataURL(file);
+}, true);
+
 
 </script>
 
