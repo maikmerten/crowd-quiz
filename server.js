@@ -1,8 +1,18 @@
 var app = require("express")();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var argv = require('yargs').argv;
 var auth = require('./auth');
 
+if(argv.username && argv.password) {
+	auth.addAdmin(argv.username, argv.password);
+} else {
+	console.log("#############################################################");
+	console.log("# Authentication for /quizmaster page disabled!             #");
+	console.log("# Invoke with --username=user --password=pass if undesired! #");
+	console.log("#############################################################");
+	auth.setAuthEnabled(false);
+}
 
 http.listen(3000, function(){
 	console.log('listening on *:3000');
@@ -12,7 +22,7 @@ app.get('/', function(req, res){
 	res.sendFile(__dirname + '/static/client.html');
 });
 
-app.get('/quizmaster', auth, function(req, res){
+app.get('/quizmaster', auth.handleRequest, function(req, res){
 	res.sendFile(__dirname + '/static/quizmaster.html');
 });
 

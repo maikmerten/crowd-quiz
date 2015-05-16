@@ -6,7 +6,8 @@
   "dependencies": {
      "express": "~4.12.3",
      "socket.io": "~1.3.5",
-     "basic-auth": "~1.0.1"
+     "basic-auth": "~1.0.1",
+     "yargs": "~3.9.0"	
   },
   "repository": {
      "type" : "git",
