@@ -17,7 +17,7 @@ module.exports = {
 
 		var user = auth(req);
 		if (!user || !admins[user.name] || admins[user.name].password !== user.pass) {
-			res.set('WWW-Authenticate', 'Basic realm="example"');
+			res.set('WWW-Authenticate', 'Basic realm="CrowdQuiz"');
 			return res.status(401).send();
 		}
 		return next();
