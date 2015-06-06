@@ -38,14 +38,6 @@ app.get('/jquery.js', function(req, res){
 	res.sendFile(__dirname + '/resources/jquery-1.11.1.js');
 });
 
-app.get('/shared.js', function(req, res){
-	res.sendFile(__dirname + '/resources/shared.js');
-});
-
-app.get('/styles.css', function(req, res){
-	res.sendFile(__dirname + '/resources/styles.css');
-});
-
 
 io.on('connection', function(socket){
 	console.log('a user connected');
