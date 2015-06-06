@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html style="display:none">
 <head>
 <meta http-equiv="x-ua-compatible" content="IE=Edge"/> 
 <meta charset="utf-8"/>
@@ -28,7 +28,8 @@ var quizinstance = "quiz1";
 var discover = 1;
 
 i18n.init({ fallbackLng: 'en' }, function(t) {
-	$("html").i18n();
+	// apply i18n and show page
+	$("html").i18n().css("display", "initial");
 });
 
 
