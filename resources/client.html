@@ -9,9 +9,7 @@
 <body>
 
 <div id="centercol">
-	<div id="questiontext">
-	Wählen Sie ein Quiz
-	</div>
+	<div id="questiontext" data-i18n="selectquiz"></div>
 
 	<img id="questionimage"/>
 	<div class="spacer"></div>
@@ -21,12 +19,18 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/jquery.js"></script>
+<script src="/i18next.js"></script>
 <script src="/shared.js"></script>
 <script>
 var socket = io();
 var optionselected = 0;
 var quizinstance = "quiz1";
 var discover = 1;
+
+i18n.init({ fallbackLng: 'en' }, function(t) {
+	$("html").i18n();
+});
+
 
 socket.emit("JoinRoom", ["clients"]);
 discoverQuizzes();

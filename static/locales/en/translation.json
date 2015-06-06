@@ -1,0 +1,19 @@
+{
+	"selectquiz"		: "Please select a quiz",
+	"enterquizname"		: "Please enter a name for your quiz",
+	"noquizloaded"		: "No quiz loaded yet",
+	"prevquestion"		: "Previous question",
+	"nextquestion"		: "Next question",
+	"revealanswer"		: "Reveal answer",
+	"newquiz"			: "New quiz",
+	"savetofile"		: "Save quiz to file",
+	"newquestion"		: "New question",
+	"deletequestion"	: "Delete question",
+	"questionup"		: "Move question up",
+	"questiondown"		: "Move question down",
+	"removeimage"		: "Remove image",
+	"dragimagehere"		: "Drag image here to attach an image to the question",
+	"textofquestion"	: "Text of the question",
+	"correctanswer"		: "Correct answer",
+	"wronganswer"		: "Wrong answer"
+}

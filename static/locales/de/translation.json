@@ -1,0 +1,19 @@
+{
+	"selectquiz"		: "Bitte wählen Sie ein Quiz",
+	"enterquizname"		: "Bitte benennen Sie Ihr Quiz",
+	"noquizloaded"		: "Noch kein Quiz geladen",
+	"prevquestion"		: "Vorherige Frage",
+	"nextquestion"		: "Nächste Frage",
+	"revealanswer"		: "Antwort aufdecken",
+	"newquiz"			: "Neues Quiz",
+	"savetofile"		: "Speichere Quiz in Datei",
+	"newquestion"		: "Neue Frage",
+	"deletequestion"	: "Entferne Frage",
+	"questionup"		: "Frage hoch",
+	"questiondown"		: "Frage runter",
+	"removeimage"		: "Entferne Bild zur Frage",
+	"dragimagehere"		: "Ziehe Bild hierhin, um Bild der Frage hinzuzufügen",
+	"textofquestion"	: "Fragetext",
+	"correctanswer"		: "Richtige Antwort",
+	"wronganswer"		: "Falsche Antwort"
+}

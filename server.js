@@ -46,6 +46,9 @@ app.get('/jquery.js', function(req, res){
 	res.sendFile(__dirname + '/resources/jquery-1.11.1' + minjs + '.js');
 });
 
+app.get('/i18next.js', function(req, res){
+	res.sendFile(__dirname + '/resources/i18next-1.9.0' + minjs + '.js');
+});
 
 io.on('connection', function(socket){
 	console.log('a user connected');

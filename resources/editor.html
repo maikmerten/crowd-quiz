@@ -50,10 +50,12 @@ input.incorrect {
 </head>
 <body>
 
+<div id="uicontainer" style="display:none">
+
 <div class="controls">
-<button id="newquestion" onClick="newQuiz();">Neues Quiz</button>
+<button id="newquestion" onClick="newQuiz();" data-i18n="newquiz"></button>
 <input type="file" id="files" name="files[]" onChange="loadFile();"/>
-<a href="" id="savelink" download="quiz.json" onClick="saveToFile();"><button type="button">Speichere Quiz in Datei</button></a>
+<a href="" id="savelink" download="quiz.json" onClick="saveToFile();"><button type="button" data-i18n="savetofile"></button></a>
 </div>
 
 <div>
@@ -61,11 +63,11 @@ input.incorrect {
 </div>
 
 <div class="controls">
-<button id="newquestion" onClick="newQuestion();">Neue Frage</button>
-<button id="removequestion" onClick="removeQuestion();">Lösche Frage</button>
-<button id="questionup" onClick="upQuestion();">Frage hoch</button>
-<button id="questiondown" onClick="downQuestion();">Frage runter</button>
-<button id="deleteimage" onClick="deleteImage();">Bild zur Frage entfernen</button>
+<button id="newquestion" onClick="newQuestion();" data-i18n="newquestion"></button>
+<button id="removequestion" onClick="removeQuestion();" data-i18n="deletequestion"></button>
+<button id="questionup" onClick="upQuestion();" data-i18n="questionup"></button>
+<button id="questiondown" onClick="downQuestion();" data-i18n="questiondown"></button>
+<button id="deleteimage" onClick="deleteImage();" data-i18n="removeimage"></button>
 </div>
 
 
@@ -77,12 +79,15 @@ input.incorrect {
 <input type="text" id="option3" class="incorrect" onChange="readQuestionEditor();"/><br/>
 </div>
 
-<p>
-Zum Beifügen eines Bildes zur Frage ein Bild hierhin ziehen.
-</p>
+<p data-i18n="dragimagehere"></p>
 
 <img id="questionimage"/>
 
+</div>
+
+
+<script src="/jquery.js"></script>
+<script src="/i18next.js"></script>
 <script>
 
 // JavaScript without nice helpers such as jQuery to ensure this works stand-alone
@@ -90,7 +95,13 @@ Zum Beifügen eines Bildes zur Frage ein Bild hierhin ziehen.
 var questions = [];
 var question = {};
 
-newQuiz();
+i18n.init({ fallbackLng: 'en' }, function(t) {
+	$("html").i18n();
+
+	// display UI only after i18n
+	newQuiz();
+	$("#uicontainer").css("display", "block");
+});
 
 
 function listQuestions() {
@@ -151,8 +162,8 @@ function newQuiz() {
 
 function newQuestion() {
 	question = {
-		"text" : "Fragetext.",
-		"options" : [ "richtige Antwort", "falsche Antwort 1", "falsche Antwort 2", "falsche Antwort 3" ]
+		"text" : i18n.t("textofquestion"),
+		"options" : [ i18n.t("correctanswer"), i18n.t("wronganswer") + " 1", i18n.t("wronganswer") + " 2", i18n.t("wronganswer") + " 3" ]
 	}
 
 	questions[questions.length] = question;
