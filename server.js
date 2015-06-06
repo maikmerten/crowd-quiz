@@ -15,7 +15,7 @@ if(argv.username && argv.password) {
 	auth.setAuthEnabled(false);
 }
 
-// determine if minified
+// determine if minified JavaScript resources are served
 var minjs = ".min";
 if(argv.debug) {
 	console.log("### Serving non-minified JavaScript libraries!");
