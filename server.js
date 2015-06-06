@@ -1,4 +1,5 @@
-var app = require("express")();
+var express = require("express");
+var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var argv = require('yargs').argv;
@@ -18,28 +19,31 @@ http.listen(3000, function(){
 	console.log('listening on *:3000');
 });
 
+app.use(express.static('static'));
+
+
 app.get('/', function(req, res){
-	res.sendFile(__dirname + '/static/client.html');
+	res.sendFile(__dirname + '/resources/client.html');
 });
 
 app.get('/quizmaster', auth.handleRequest, function(req, res){
-	res.sendFile(__dirname + '/static/quizmaster.html');
+	res.sendFile(__dirname + '/resources/quizmaster.html');
 });
 
 app.get('/editor', function(req, res){
-	res.sendFile(__dirname + '/static/editor.html');
+	res.sendFile(__dirname + '/resources/editor.html');
 });
 
 app.get('/jquery.js', function(req, res){
-	res.sendFile(__dirname + '/static/jquery-1.11.1.js');
+	res.sendFile(__dirname + '/resources/jquery-1.11.1.js');
 });
 
 app.get('/shared.js', function(req, res){
-	res.sendFile(__dirname + '/static/shared.js');
+	res.sendFile(__dirname + '/resources/shared.js');
 });
 
 app.get('/styles.css', function(req, res){
-	res.sendFile(__dirname + '/static/styles.css');
+	res.sendFile(__dirname + '/resources/styles.css');
 });
 
 
