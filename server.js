@@ -15,6 +15,14 @@ if(argv.username && argv.password) {
 	auth.setAuthEnabled(false);
 }
 
+// determine if minified
+var minjs = ".min";
+if(argv.debug) {
+	console.log("### Serving non-minified JavaScript libraries!");
+	minjs = "";
+}
+
+
 http.listen(3000, function(){
 	console.log('listening on *:3000');
 });
@@ -35,7 +43,7 @@ app.get('/editor', function(req, res){
 });
 
 app.get('/jquery.js', function(req, res){
-	res.sendFile(__dirname + '/resources/jquery-1.11.1.js');
+	res.sendFile(__dirname + '/resources/jquery-1.11.1' + minjs + '.js');
 });
 
 
