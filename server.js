@@ -22,9 +22,14 @@ if(argv.debug) {
 	minjs = "";
 }
 
+// determine port to be used, the default is port 3000
+var port = 3000;
+if(argv.port) {
+	port = argv.port;
+}
 
-http.listen(3000, function(){
-	console.log('listening on *:3000');
+http.listen(port, function(){
+	console.log('listening on *:' + port);
 });
 
 app.use(express.static('static'));
