@@ -219,8 +219,16 @@ function loadFile() {
 	var reader = new FileReader();
 	// Closure to capture the file information.
 	reader.onload = (function (theFile) {
-		return function (e) { 
-			questions = JSON.parse(e.target.result);
+		return function (e) {
+			var loadedQuestions = JSON.parse(e.target.result);
+			if(confirm("Append the quiz loaded from file to the current quiz?")) {
+				for(var i = 0; i < loadedQuestions.length; ++i) {
+					questions.push(loadedQuestions[i]);
+				}
+			} else {
+				questions = loadedQuestions;
+			}
+
 			listQuestions();
 			console.log(questions);
 		};
