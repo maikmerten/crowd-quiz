@@ -221,7 +221,13 @@ function loadFile() {
 	reader.onload = (function (theFile) {
 		return function (e) {
 			var loadedQuestions = JSON.parse(e.target.result);
-			if(confirm("Append the quiz loaded from file to the current quiz?")) {
+			var append = false;
+			// if current quiz contains questions, ask if to append quiz
+			if(questions.length > 0) {
+				append = confirm(i18n.t("appendquiz"));
+			}
+
+			if(append) {
 				for(var i = 0; i < loadedQuestions.length; ++i) {
 					questions.push(loadedQuestions[i]);
 				}

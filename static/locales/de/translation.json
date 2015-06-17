@@ -5,7 +5,7 @@
 	"prevquestion"		: "Vorherige Frage",
 	"nextquestion"		: "Nächste Frage",
 	"revealanswer"		: "Antwort aufdecken",
-	"newquiz"			: "Neues Quiz",
+	"newquiz"		: "Neues Quiz",
 	"savetofile"		: "Speichere Quiz in Datei",
 	"newquestion"		: "Neue Frage",
 	"deletequestion"	: "Entferne Frage",
@@ -15,5 +15,6 @@
 	"dragimagehere"		: "Ziehe Bild hierhin, um Bild der Frage hinzuzufügen",
 	"textofquestion"	: "Fragetext",
 	"correctanswer"		: "Richtige Antwort",
-	"wronganswer"		: "Falsche Antwort"
+	"wronganswer"		: "Falsche Antwort",
+	"appendquiz"		: "Quiz aus der Datei dem aktuellen Quiz anhängen?"
 }
