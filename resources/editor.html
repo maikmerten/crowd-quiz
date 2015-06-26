@@ -133,8 +133,14 @@ function fillQuestionEditor() {
 
 function readQuestionEditor() {
 	question.text = document.getElementById("text").value;
-	for(var i = 0; i < question.options.length; ++i) {
-		question.options[i] = document.getElementById("option" + i).value;
+	question.options = [];
+	var i = 0;
+	while(document.getElementById("option" + i)) {
+		var value = document.getElementById("option" + i).value;
+		if(i == 0 || value.trim().length > 0) {
+			question.options.push(value);
+		}
+		i++;
 	}
 	listQuestions();
 }
