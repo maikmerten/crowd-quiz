@@ -136,7 +136,7 @@ function readQuestionEditor() {
 	question.options = [];
 	for(var i = 0; document.getElementById("option" + i); ++i) {
 		var value = document.getElementById("option" + i).value;
-		if(i == 0 || value.trim().length > 0) {
+		if(value.trim().length > 0) {
 			question.options.push(value);
 		}
 	}
