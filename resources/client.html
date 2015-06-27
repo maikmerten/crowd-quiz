@@ -58,7 +58,7 @@ function clickOption() {
 	var answer = {
 		"from" : getId(),
 		"quizinstance" : quizinstance,
-		"index" : option.attr("originalindex")
+		"index" : option.data("originalindex")
 	};
 
 	socket.emit("QuizAnswer", answer);

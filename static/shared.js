@@ -29,7 +29,7 @@ function displayQuestion(question, clickfunction) {
 
 		option.text(question.options[i]);
 		option.toggleClass("option", true);
-		option.attr("originalindex", i);
+		option.data("originalindex", i);
 
 		var count = $("<span>");
 		count.attr("id", "optioncount" + idx);
@@ -58,7 +58,7 @@ function revealCorrect() {
 			break;
 		}
 
-		var originalidx = option.attr("originalindex");
+		var originalidx = option.data("originalindex");
 		option.toggleClass("correct", originalidx == 0);
 		option.toggleClass("incorrect", originalidx != 0);
 	}

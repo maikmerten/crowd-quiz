@@ -136,9 +136,7 @@ function displayAnswerCount() {
 			break;
 		}
 
-		var originalidx = option.attr("originalindex");
-		
-
+		var originalidx = option.data("originalindex");
 
 		var count = answers[originalidx];
 		if(!count) {
@@ -146,9 +144,6 @@ function displayAnswerCount() {
 		}
 		$("#optioncount" + i).text(count);
 
-		//var text = option.text();
-		//text += " (" + count + ")";
-		//option.text(text);
 	}
 }
 
