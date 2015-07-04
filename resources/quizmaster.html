@@ -29,17 +29,17 @@
 <script src="/shared.js"></script>
 <script>
 var socket = io();
-var questions = [];
-var currentquestion = -1;
 var answers = [];
-var revealed = 0;
+var revealed = false;
 var quizname = "Quiz";
 var quizinstance = "quiz1";
 var qr = new QuizRenderer("#centercol");
+var qh = new QuizHolder([]);
 
 i18n.init({ fallbackLng: 'en' }, function(t) {
 	// apply i18n and show page
 	$("html").i18n().css("display", "initial");
+	updateUI();
 	openQuiz();
 });
 
@@ -61,9 +61,8 @@ function handleFileSelect(evt) {
 	// Closure to capture the file information.
 	reader.onload = (function (theFile) {
         	return function (e) { 
-			questions = JSON.parse(e.target.result);
-			currentquestion = -1;
-			nextQuestion();
+				qh = new QuizHolder(JSON.parse(e.target.result));
+				sendQuestion();
         	};
 	})(f);
 
@@ -73,46 +72,20 @@ function handleFileSelect(evt) {
 document.getElementById('files').addEventListener('change', handleFileSelect, false);
 
 
-function updateProgress() {
-	$("#progress").text("(" + (currentquestion + 1) + "/" + questions.length + ")");
+function updateUI() {
+	$("#progress").text(qh.size() > 0 ? "(" + (qh.position() + 1) + "/" + qh.size() + ")" : "");
+	$("#prev").attr("disabled", !qh.hasPrev());
+	$("#next").attr("disabled", !qh.hasNext());
+	$("#reveal").attr("disabled", qh.size() < 1 || revealed);
 }
 
-
-function prevQuestion() {
-	if(!questions || questions.length < 1) {
-		return;
-	}
-
-	--currentquestion;
-	if(currentquestion < 0) {
-		currentquestion = 0;
-		return;
-	}
-
-	sendQuestion();
-}
-
-
-function nextQuestion() {
-	if(!questions || questions.length < 1) {
-		return;
-	}
-
-	++currentquestion;
-	if(currentquestion >= questions.length) {
-		currentquestion = questions.length - 1;
-		return;
-	}
-
-	sendQuestion();
-}
 
 function sendQuestion() {
-	var question = questions[currentquestion];
+	var question = qh.current();
 
 	// reset question-related state
 	answers = [];
-	revealed = 0;
+	revealed = false;
 	$("#answercount").text("");
 
 	// send question to clients
@@ -122,24 +95,26 @@ function sendQuestion() {
 	};
 	socket.emit("QuizQuestion", questionEnvelope);
 
-	updateProgress();
 	qr.renderQuestion(question);
+	updateUI();
 }
 
 
 $("#prev").click(function() {
-	prevQuestion();
+	qh.prev();
+	sendQuestion();
 });
      
 $("#next").click(function() {
-	nextQuestion();
+	qh.next();
+	sendQuestion();
 });
 
 $("#reveal").click(function() {
 	if(revealed) {
 		return;
 	}
-	revealed = 1;
+	revealed = true;
 
 	var revealMsg = {
 		"quizinstance" : quizinstance
@@ -148,6 +123,7 @@ $("#reveal").click(function() {
 	socket.emit("RevealCorrect", revealMsg);
 	qr.revealAnswer();
 	qr.revealVote(answers);
+	updateUI();
 });
 
 
@@ -171,7 +147,7 @@ socket.on("RequestQuestion", function(request) {
 		return;		// don't send revealed questions
 	}
 
-	var question = questions[currentquestion];
+	var question = qh.current();
 	if(!question) {
 		return;		// we may not yet have loaded a quiz
 	}
