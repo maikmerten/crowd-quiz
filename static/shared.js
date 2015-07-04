@@ -4,10 +4,11 @@ QuestionRenderer = function(topElementSelector) {
 		throw "QuestionRenderer: could not find topElement with selector " + topElementSelector;
 	}
 
+	var optionselected = false;
 }
 
-QuestionRenderer.prototype.renderQuestion = function(question, clickfunction) {
-	
+QuestionRenderer.prototype.renderQuestion = function(question, clickcallback) {
+	optionselected = false;
 	this.topElem.empty().append($("<div>").attr("id", "questiontext").text(question.text));
 
 	if(question.image) {
@@ -40,8 +41,16 @@ QuestionRenderer.prototype.renderQuestion = function(question, clickfunction) {
 			var count = $("<span>").attr("id", "optioncount" + idx).toggleClass("optioncount", true);
 			option.append(count);
 
-			if(clickfunction) {
-				option.click(clickfunction);
+			if(clickcallback) {
+				option.click(function() {
+					if(optionselected) {
+						return;
+					}
+					optionselected = true;
+		
+					var option = $(this).toggleClass("selected", true);
+					clickcallback(option.data("originalindex"));
+				});
 			}
 		}
 	}
@@ -49,6 +58,8 @@ QuestionRenderer.prototype.renderQuestion = function(question, clickfunction) {
 }
 
 QuestionRenderer.prototype.revealAnswer = function() {
+	optionselected = true;
+
 	for(var i = 0; i < 999; ++i) {
 		var option = $("#option" + i);
 		if(!option.length) {

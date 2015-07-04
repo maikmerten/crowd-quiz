@@ -20,7 +20,6 @@
 <script src="/shared.js"></script>
 <script>
 var socket = io();
-var optionselected = 0;
 var quizinstance = "quiz1";
 var discover = 1;
 var qr = new QuestionRenderer("#centercol");
@@ -43,24 +42,6 @@ function getId() {
 	return id;
 }
 
-// event handler that fires when selecting an option
-function clickOption() {
-	if(optionselected) {
-		return;
-	}
-	optionselected = 1;
-
-	var option = $(this);
-	option.toggleClass("selected", true);
-
-	var answer = {
-		"from" : getId(),
-		"quizinstance" : quizinstance,
-		"index" : option.data("originalindex")
-	};
-
-	socket.emit("QuizAnswer", answer);
-}
 
 function requestQuestion() {
 	var request = {
@@ -99,13 +80,19 @@ socket.on("DiscoveryResponse", function(response) {
 
 // display incoming quiz question
 socket.on('QuizQuestion', function(question) {
-	optionselected = 0;
-	qr.renderQuestion(question, clickOption);
+	qr.renderQuestion(question, function (optionindex) {
+		var answer = {
+			"from" : getId(),
+			"quizinstance" : quizinstance,
+			"index" : optionindex
+		};
+
+		socket.emit("QuizAnswer", answer);
+	});
 });
 
 // show correct answer to question
 socket.on("RevealCorrect", function() {
-	optionselected = 1; // block selection afterwards
 	qr.revealAnswer();
 });
 
