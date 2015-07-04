@@ -1,14 +1,14 @@
-QuestionRenderer = function(topElementSelector) {
+QuizRenderer = function(topElementSelector) {
 	this.topElem = $(topElementSelector);
 	if(!this.topElem.length) {
-		throw "QuestionRenderer: could not find topElement with selector " + topElementSelector;
+		throw "QuizRenderer: could not find topElement with selector " + topElementSelector;
 	}
 
 	var that = this;
 	var optionselected = false;
 }
 
-QuestionRenderer.prototype.renderQuestion = function(question, clickcallback) {
+QuizRenderer.prototype.renderQuestion = function(question, clickcallback) {
 	optionselected = false;
 	this.topElem.empty().append($("<div>").attr("id", "questiontext").text(question.text));
 
@@ -58,7 +58,7 @@ QuestionRenderer.prototype.renderQuestion = function(question, clickcallback) {
 
 }
 
-QuestionRenderer.prototype.revealAnswer = function() {
+QuizRenderer.prototype.revealAnswer = function() {
 	optionselected = true;
 
 	for(var i = 0; i < 999; ++i) {
@@ -73,7 +73,7 @@ QuestionRenderer.prototype.revealAnswer = function() {
 	}
 }
 
-QuestionRenderer.prototype.revealVote = function(votes) {
+QuizRenderer.prototype.revealVote = function(votes) {
 	for(var i = 0; i < 999; ++i) {
 		var option = $("#option" + i);
 		if(!option.length) {
