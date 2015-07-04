@@ -72,3 +72,23 @@ QuestionRenderer.prototype.revealAnswer = function() {
 		option.toggleClass("incorrect", originalidx != 0);
 	}
 }
+
+QuestionRenderer.prototype.revealVote = function(votes) {
+	for(var i = 0; i < 999; ++i) {
+		var option = $("#option" + i);
+		if(!option.length) {
+			break;
+		}
+
+		var originalidx = option.data("originalindex");
+		var optioncount = $("#optioncount" + i);
+
+		var count = 0;
+		for(var key in votes) {
+			if(originalidx == votes[key]) {
+				count++;
+			}
+		}
+		optioncount.text(count + "");
+	}
+}

@@ -126,24 +126,6 @@ function sendQuestion() {
 	qr.renderQuestion(question);
 }
 
-function displayAnswerCount() {
-	for(var i = 0; i < 999; ++i) {
-		var option = $("#option" + i);
-		if(!option.length) {
-			break;
-		}
-
-		var originalidx = option.data("originalindex");
-
-		var count = answers[originalidx];
-		if(!count) {
-			count = 0;
-		}
-		$("#optioncount" + i).text(count);
-
-	}
-}
-
 
 $("#prev").click(function() {
 	prevQuestion();
@@ -165,7 +147,7 @@ $("#reveal").click(function() {
 
 	socket.emit("RevealCorrect", revealMsg);
 	qr.revealAnswer();
-	displayAnswerCount();
+	qr.revealVote(answers);
 });
 
 
@@ -177,32 +159,9 @@ socket.on("QuizAnswer", function(answer) {
 		return;
 	}
 
-	// ensure we have a registry of voters...
-	if(!answers.voters) {
-		answers.voters = [];
-	}
-	// ... and reject duplicate answers
-	if(answers.voters[answer.from]) {
-		return;
-	}
-	answers.voters[answer.from] = true;
+	answers[answer.from] = answer.index;
 
-
-	var selected = answer.index;
-	if(!answers[selected]) {
-		answers[selected] = 0;
-	}
-	answers[selected] = answers[selected] + 1;
-
-	var count = 0;
-	for(var i = 0; i < answers.length; ++i) {
-		if(answers[i]) {
-			count += answers[i];
-		}
-	}
-
-	$("#answercount").text("(" + count + ")");
-
+	$("#answercount").text("(" + Object.keys(answers).length + ")");
 });
 
 // serve question request for clients that connected late
