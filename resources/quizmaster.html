@@ -11,10 +11,6 @@
 <div id="centercol">
 	<div id="questiontext" data-i18n="noquizloaded"></div>
 
-	<img id="questionimage"/>
-	<div class="spacer"></div>
-
-	<ul id="optionlist"></ul>
 </div>
 
 <div id="controls">
@@ -39,6 +35,7 @@ var answers = [];
 var revealed = 0;
 var quizname = "Quiz";
 var quizinstance = "quiz1";
+var qr = new QuestionRenderer("#centercol");
 
 i18n.init({ fallbackLng: 'en' }, function(t) {
 	// apply i18n and show page
@@ -126,7 +123,7 @@ function sendQuestion() {
 	socket.emit("QuizQuestion", questionEnvelope);
 
 	updateProgress();
-	displayQuestion(question);
+	qr.renderQuestion(question);
 }
 
 function displayAnswerCount() {
@@ -167,7 +164,7 @@ $("#reveal").click(function() {
 	};
 
 	socket.emit("RevealCorrect", revealMsg);
-	revealCorrect();
+	qr.revealAnswer();
 	displayAnswerCount();
 });
 

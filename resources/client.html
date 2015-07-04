@@ -11,9 +11,6 @@
 <div id="centercol">
 	<div id="questiontext" data-i18n="selectquiz"></div>
 
-	<img id="questionimage"/>
-	<div class="spacer"></div>
-
 	<ul id="optionlist"></ul>
 </div>
 
@@ -26,6 +23,7 @@ var socket = io();
 var optionselected = 0;
 var quizinstance = "quiz1";
 var discover = 1;
+var qr = new QuestionRenderer("#centercol");
 
 i18n.init({ fallbackLng: 'en' }, function(t) {
 	// apply i18n and show page
@@ -102,14 +100,13 @@ socket.on("DiscoveryResponse", function(response) {
 // display incoming quiz question
 socket.on('QuizQuestion', function(question) {
 	optionselected = 0;
-
-	displayQuestion(question, clickOption);
+	qr.renderQuestion(question, clickOption);
 });
 
 // show correct answer to question
 socket.on("RevealCorrect", function() {
 	optionselected = 1; // block selection afterwards
-	revealCorrect();
+	qr.revealAnswer();
 });
 
 socket.on('ping', function(data){
