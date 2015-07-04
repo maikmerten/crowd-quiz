@@ -4,6 +4,7 @@ QuestionRenderer = function(topElementSelector) {
 		throw "QuestionRenderer: could not find topElement with selector " + topElementSelector;
 	}
 
+	var that = this;
 	var optionselected = false;
 }
 
