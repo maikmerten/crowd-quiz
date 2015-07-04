@@ -1,5 +1,6 @@
 {
 	"selectquiz"		: "Please select a quiz",
+	"waitforquestion"	: "Waiting for a question",
 	"enterquizname"		: "Please enter a name for your quiz",
 	"noquizloaded"		: "No quiz loaded yet",
 	"prevquestion"		: "Previous question",

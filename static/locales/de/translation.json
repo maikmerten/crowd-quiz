@@ -1,11 +1,12 @@
 {
 	"selectquiz"		: "Bitte wählen Sie ein Quiz",
+	"waitforquestion"	: "Warte auf eine Frage",
 	"enterquizname"		: "Bitte benennen Sie Ihr Quiz",
 	"noquizloaded"		: "Noch kein Quiz geladen",
 	"prevquestion"		: "Vorherige Frage",
 	"nextquestion"		: "Nächste Frage",
 	"revealanswer"		: "Antwort aufdecken",
-	"newquiz"		: "Neues Quiz",
+	"newquiz"			: "Neues Quiz",
 	"savetofile"		: "Speichere Quiz in Datei",
 	"newquestion"		: "Neue Frage",
 	"deletequestion"	: "Entferne Frage",

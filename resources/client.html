@@ -88,7 +88,7 @@ socket.on("DiscoveryResponse", function(response) {
 		discover = 0;
 		quizinstance = response.quizinstance;
 		socket.emit("JoinRoom", ["clients." + response.quizinstance]);
-		$("#questiontext").text("Warte auf Quiz-Frage");
+		$("#questiontext").text(i18n.t("waitforquestion"));
 		$("#optionlist").empty();
 		requestQuestion();
 	});
