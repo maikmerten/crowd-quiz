@@ -10,7 +10,6 @@
 
 <div id="centercol">
 	<div id="questiontext" data-i18n="noquizloaded"></div>
-
 </div>
 
 <div id="controls">
@@ -29,8 +28,7 @@
 <script src="/shared.js"></script>
 <script>
 var socket = io();
-var answers = [];
-var revealed = false;
+var answers = {};
 var quizname = "Quiz";
 var quizinstance = "quiz1";
 var qr = new QuizRenderer("#centercol");
@@ -76,7 +74,7 @@ function updateUI() {
 	$("#progress").text(qh.size() > 0 ? "(" + (qh.position() + 1) + "/" + qh.size() + ")" : "");
 	$("#prev").attr("disabled", !qh.hasPrev());
 	$("#next").attr("disabled", !qh.hasNext());
-	$("#reveal").attr("disabled", qh.size() < 1 || revealed);
+	$("#reveal").attr("disabled", qh.size() < 1 || qr.isRevealed());
 }
 
 
@@ -84,8 +82,7 @@ function sendQuestion() {
 	var question = qh.current();
 
 	// reset question-related state
-	answers = [];
-	revealed = false;
+	answers = {};
 	$("#answercount").text("");
 
 	// send question to clients
@@ -111,18 +108,16 @@ $("#next").click(function() {
 });
 
 $("#reveal").click(function() {
-	if(revealed) {
+	if(qr.isRevealed()) {
 		return;
 	}
-	revealed = true;
 
 	var revealMsg = {
 		"quizinstance" : quizinstance
 	};
 
 	socket.emit("RevealCorrect", revealMsg);
-	qr.revealAnswer();
-	qr.revealVote(answers);
+	qr.reveal(answers);
 	updateUI();
 });
 
@@ -131,7 +126,7 @@ $("#reveal").click(function() {
 socket.on("QuizAnswer", function(answer) {
 
 	// don't count if we already revealed the solution
-	if(revealed) {
+	if(qr.isRevealed()) {
 		return;
 	}
 
@@ -143,7 +138,7 @@ socket.on("QuizAnswer", function(answer) {
 // serve question request for clients that connected late
 socket.on("RequestQuestion", function(request) {
 
-	if(revealed) {
+	if(qr.isRevealed()) {
 		return;		// don't send revealed questions
 	}
 

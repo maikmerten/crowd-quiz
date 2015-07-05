@@ -93,7 +93,7 @@ socket.on('QuizQuestion', function(question) {
 
 // show correct answer to question
 socket.on("RevealCorrect", function() {
-	qr.revealAnswer();
+	qr.reveal();
 });
 
 socket.on('ping', function(data){

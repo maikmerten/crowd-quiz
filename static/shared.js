@@ -6,9 +6,11 @@ QuizRenderer = function(topElementSelector) {
 
 	var that = this;
 	var optionselected = false;
+	var revealed = false;
 	
 	this.renderQuestion = function(question, clickcallback) {
 		optionselected = false;
+		revealed = false;
 		topElem.empty().append($("<div>").attr("id", "questiontext").text(question.text));
 
 		if(question.image) {
@@ -57,7 +59,8 @@ QuizRenderer = function(topElementSelector) {
 
 	}
 
-	this.revealAnswer = function() {
+	this.reveal = function(votes) {
+		revealed = true;
 		optionselected = true;
 
 		for(var i = 0; i < 999; ++i) {
@@ -69,28 +72,25 @@ QuizRenderer = function(topElementSelector) {
 			var originalidx = option.data("originalindex");
 			option.toggleClass("correct", originalidx == 0);
 			option.toggleClass("incorrect", originalidx != 0);
-		}
-	}
 
-	this.revealVote = function(votes) {
-		for(var i = 0; i < 999; ++i) {
-			var option = $("#option" + i);
-			if(!option.length) {
-				break;
-			}
-
-			var originalidx = option.data("originalindex");
-			var optioncount = $("#optioncount" + i);
-
-			var count = 0;
-			for(var key in votes) {
-				if(originalidx == votes[key]) {
-					count++;
+			if(votes) {
+				var optioncount = $("#optioncount" + i);
+				var count = 0;
+				for(var key in votes) {
+					if(originalidx === votes[key]) {
+						count++;
+					}
 				}
+				optioncount.text(count + "");
 			}
-			optioncount.text(count + "");
+
 		}
 	}
+
+	this.isRevealed = function() {
+		return revealed;
+	}
+
 }
 
 QuizHolder = function(questions) {
@@ -131,5 +131,4 @@ QuizHolder = function(questions) {
 		}
 		return this.current();
 	}
-	
 }
