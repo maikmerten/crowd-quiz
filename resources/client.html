@@ -33,15 +33,6 @@ i18n.init({ fallbackLng: 'en' }, function(t) {
 socket.emit("JoinRoom", ["clients"]);
 discoverQuizzes();
 
-function getId() {
-	var id = localStorage.getItem("quizClientId");
-	if(!id) {
-		id = socket.id;
-		localStorage.setItem("quizClientId", id);
-	}
-	return id;
-}
-
 
 function requestQuestion() {
 	var request = {
@@ -82,7 +73,7 @@ socket.on("DiscoveryResponse", function(response) {
 socket.on('QuizQuestion', function(question) {
 	qr.renderQuestion(question, function (optionindex) {
 		var answer = {
-			"from" : getId(),
+			"from" : QuizUtil.permaId(),
 			"quizinstance" : quizinstance,
 			"index" : optionindex
 		};

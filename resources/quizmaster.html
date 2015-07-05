@@ -45,7 +45,7 @@ i18n.init({ fallbackLng: 'en' }, function(t) {
 
 function openQuiz() {
 	quizname = prompt(i18n.t("enterquizname"), "Quiz-" + ((Math.random() * 65536)|0));
-	quizinstance = "quiz-" + socket.id;
+	quizinstance = "quiz-" + QuizUtil.randomString();
 
 	socket.emit("JoinRoom", ["quizmaster." + quizinstance, "quizmaster"]);
 }
@@ -124,7 +124,6 @@ $("#reveal").click(function() {
 
 // received an answer from a client
 socket.on("QuizAnswer", function(answer) {
-
 	// don't count if we already revealed the solution
 	if(qr.isRevealed()) {
 		return;
@@ -132,7 +131,9 @@ socket.on("QuizAnswer", function(answer) {
 
 	answers[answer.from] = answer.index;
 
-	$("#answercount").text("(" + Object.keys(answers).length + ")");
+	var count = Object.keys(answers).length;
+	var percentage = Math.min(Math.floor((count / answer.totalClients) * 100), 100);
+	$("#answercount").text("(" + count + ", " + percentage + "%)");
 });
 
 // serve question request for clients that connected late

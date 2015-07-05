@@ -132,3 +132,21 @@ QuizHolder = function(questions) {
 		return this.current();
 	}
 }
+
+QuizUtil = {
+	randomString: function() {
+		var chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		var result = "";
+		for (var i = 32; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
+		return result;
+	},
+
+	permaId: function() {
+		var id = localStorage.getItem("CrowdQuizId");
+		if(!id) {
+			id = QuizUtil.randomString();
+			localStorage.setItem("CrowdQuizId", id);
+		}
+		return id;
+	}
+}

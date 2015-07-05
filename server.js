@@ -102,7 +102,9 @@ io.on('connection', function(socket){
 
 	// forward answers to quiz master
 	socket.on("QuizAnswer", function(answer) {
-		console.log("answer from " + answer.from + " for quiz " + answer.quizinstance);
+		// determine number of clients for this quiz
+		var room = io.sockets.adapter.rooms["clients." + answer.quizinstance];
+		answer.totalClients = Object.keys(room).length;
 		io.in("quizmaster." + answer.quizinstance).emit("QuizAnswer", answer);
 	});
 
