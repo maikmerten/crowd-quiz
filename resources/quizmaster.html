@@ -18,7 +18,7 @@
 	<button id="next" data-i18n="nextquestion"></button>
 	<button id="reveal" data-i18n="revealanswer"></button>
 	<span id="progress"></span>
-	<span id="answercount">(0)</span>
+	<span id="answercount"></span>
 </div>
 
 
@@ -133,7 +133,7 @@ socket.on("QuizAnswer", function(answer) {
 
 	var count = Object.keys(answers).length;
 	var percentage = Math.min(Math.floor((count / answer.totalClients) * 100), 100);
-	$("#answercount").text("(" + count + ", " + percentage + "%)");
+	$("#answercount").text( count + " | " + percentage + "%");
 });
 
 // serve question request for clients that connected late
