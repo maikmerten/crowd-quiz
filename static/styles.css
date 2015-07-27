@@ -44,7 +44,7 @@ div#questiontext {
 	padding-bottom: 40px;
 }
 
-img#questionimage {
+canvas#questionimage {
 	margin: 0px;
 	margin-left: auto;
 	margin-right: auto;

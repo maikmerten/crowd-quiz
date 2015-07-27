@@ -14,7 +14,15 @@ QuizRenderer = function(topElementSelector) {
 		topElem.empty().append($("<div>").attr("id", "questiontext").text(question.text));
 
 		if(question.image) {
-			topElem.append($("<img>").attr("id", "questionimage").attr("src", question.image).css("display", "block"));
+			var canvas = $("<canvas>");
+			topElem.append(canvas.attr("id", "questionimage").css("display", "block"));
+			var img = new Image();
+			img.onload = function() {
+				canvas.attr("width", img.width).attr("height", img.height);
+				var ctx = canvas[0].getContext("2d");
+				ctx.drawImage(img,0,0);
+			};			
+			img.src = question.image;
 		}
 
 		if(question.options && question.options.length) {
