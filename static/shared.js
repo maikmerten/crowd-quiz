@@ -23,6 +23,14 @@ QuizRenderer = function(topElementSelector) {
 				ctx.drawImage(img,0,0);
 			};			
 			img.src = question.image;
+
+			canvas.click(function(evt) {
+				var x = evt.pageX - canvas[0].offsetLeft;
+				var y = evt.pageY - canvas[0].offsetTop;
+
+				//that.markImagePosition(x, y);
+				
+			});
 		}
 
 		if(question.options && question.options.length) {
@@ -65,6 +73,19 @@ QuizRenderer = function(topElementSelector) {
 			}
 		}
 
+	}
+
+
+	this.markImagePosition = function(x, y) {
+		var canvas = $("#questionimage");
+		var ctx = canvas[0].getContext("2d");
+		ctx.beginPath();
+		ctx.arc(x, y, 3, 0, 2 * Math.PI, false);
+		ctx.fillStyle = 'green';
+		ctx.fill();
+		ctx.lineWidth = 2;
+		ctx.strokeStyle = '#003300';
+		ctx.stroke();
 	}
 
 	this.reveal = function(votes) {
