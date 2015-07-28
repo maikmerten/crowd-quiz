@@ -71,11 +71,16 @@ socket.on("DiscoveryResponse", function(response) {
 
 // display incoming quiz question
 socket.on('QuizQuestion', function(question) {
-	qr.renderQuestion(question, function (optionindex) {
+	qr.renderQuestion(question, function (click) {
+		if(click.clicktype != "optionclick") {
+			console.log("unknown click type: " + click.clicktype);
+			return;
+		}
+
 		var answer = {
 			"from" : QuizUtil.permaId(),
 			"quizinstance" : quizinstance,
-			"index" : optionindex
+			"index" : click.clickedoption
 		};
 
 		socket.emit("QuizAnswer", answer);

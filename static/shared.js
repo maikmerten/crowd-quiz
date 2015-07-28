@@ -24,13 +24,19 @@ QuizRenderer = function(topElementSelector) {
 			};			
 			img.src = question.image;
 
-			canvas.click(function(evt) {
-				var x = evt.pageX - canvas[0].offsetLeft;
-				var y = evt.pageY - canvas[0].offsetTop;
+			if(clickcallback) {
+				canvas.click(function(evt) {
+					var x = evt.pageX - canvas[0].offsetLeft;
+					var y = evt.pageY - canvas[0].offsetTop;
 
-				//that.markImagePosition(x, y);
-				
-			});
+					var click = {
+						clicktype: "imageclick",
+						clickX: x,
+						clickY: y
+					};
+					clickcallback(click);
+				});
+			}
 		}
 
 		if(question.options && question.options.length) {
@@ -67,7 +73,11 @@ QuizRenderer = function(topElementSelector) {
 						optionselected = true;
 		
 						var option = $(this).toggleClass("selected", true);
-						clickcallback(option.data("originalindex"));
+						var click = {
+							clicktype: "optionclick",
+							clickedoption: option.data("originalindex")
+						};
+						clickcallback(click);
 					});
 				}
 			}
