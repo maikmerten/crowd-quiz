@@ -5,11 +5,9 @@ QuizRenderer = function(topElementSelector) {
 	}
 
 	var that = this;
-	var optionselected = false;
 	var revealed = false;
 	
 	this.renderQuestion = function(question, clickcallback) {
-		optionselected = false;
 		revealed = false;
 		topElem.empty().append($("<div>").attr("id", "questiontext").text(question.text));
 
@@ -26,6 +24,8 @@ QuizRenderer = function(topElementSelector) {
 
 			if(clickcallback) {
 				canvas.click(function(evt) {
+					if(revealed) return;
+
 					var x = evt.pageX - canvas[0].offsetLeft;
 					var y = evt.pageY - canvas[0].offsetTop;
 
@@ -67,11 +67,9 @@ QuizRenderer = function(topElementSelector) {
 
 				if(clickcallback) {
 					option.click(function() {
-						if(optionselected) {
-							return;
-						}
-						optionselected = true;
-		
+						if(revealed) return;
+
+						$("li.option").toggleClass("selected", false);		
 						var option = $(this).toggleClass("selected", true);
 						var click = {
 							clicktype: "optionclick",
@@ -100,7 +98,6 @@ QuizRenderer = function(topElementSelector) {
 
 	this.reveal = function(votes) {
 		revealed = true;
-		optionselected = true;
 
 		for(var i = 0; i < 999; ++i) {
 			var option = $("#option" + i);
