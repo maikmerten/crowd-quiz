@@ -72,15 +72,20 @@ socket.on("DiscoveryResponse", function(response) {
 // display incoming quiz question
 socket.on('QuizQuestion', function(question) {
 	qr.renderQuestion(question, function (click) {
-		if(click.clicktype != "optionclick") {
-			console.log("unknown click type: " + click.clicktype);
+		if(!QuizUtil.clickIsRelevant(click, question)) {
+			console.log("irrelevant click type: " + click.clicktype);
 			return;
+		}
+
+		if("x" in click && "y" in click) {
+			qr.redrawImage();
+			qr.markImagePosition(click.x, click.y);
 		}
 
 		var answer = {
 			"from" : QuizUtil.permaId(),
 			"quizinstance" : quizinstance,
-			"index" : click.clickedoption
+			"click" : click
 		};
 
 		socket.emit("QuizAnswer", answer);

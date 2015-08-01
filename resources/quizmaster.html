@@ -124,12 +124,12 @@ $("#reveal").click(function() {
 
 // received an answer from a client
 socket.on("QuizAnswer", function(answer) {
-	// don't count if we already revealed the solution
-	if(qr.isRevealed()) {
+	// don't count if we already revealed the solution or answer type doesn't fit
+	if(qr.isRevealed() || !QuizUtil.clickIsRelevant(answer.click, qh.current())) {
 		return;
 	}
 
-	answers[answer.from] = answer.index;
+	answers[answer.from] = answer.click;
 
 	var count = Object.keys(answers).length;
 	var percentage = Math.min(Math.floor((count / answer.totalClients) * 100), 100);

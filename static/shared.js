@@ -6,15 +6,17 @@ QuizRenderer = function(topElementSelector) {
 
 	var that = this;
 	var revealed = false;
+	var canvas = null;
+	var img = null;
 	
 	this.renderQuestion = function(question, clickcallback) {
 		revealed = false;
 		topElem.empty().append($("<div>").attr("id", "questiontext").text(question.text));
 
 		if(question.image) {
-			var canvas = $("<canvas>");
+			canvas = $("<canvas>");
 			topElem.append(canvas.attr("id", "questionimage").css("display", "block"));
-			var img = new Image();
+			img = new Image();
 			img.onload = function() {
 				canvas.attr("width", img.width).attr("height", img.height);
 				var ctx = canvas[0].getContext("2d");
@@ -30,16 +32,17 @@ QuizRenderer = function(topElementSelector) {
 					var y = evt.pageY - canvas[0].offsetTop;
 
 					var click = {
-						clicktype: "imageclick",
-						clickX: x,
-						clickY: y
+						type: "imageclick",
+						x: x,
+						y: y
 					};
 					clickcallback(click);
 				});
 			}
 		}
 
-		if(question.options && question.options.length) {
+		// question type 0: Display answer options
+		if(!question.type && question.options && question.options.length) {
 			var optionlist = $("<ul>").attr("id", "optionlist");
 			topElem.append(optionlist);
 
@@ -72,7 +75,7 @@ QuizRenderer = function(topElementSelector) {
 						$("li.option").toggleClass("selected", false);		
 						var option = $(this).toggleClass("selected", true);
 						var click = {
-							clicktype: "optionclick",
+							type: "optionclick",
 							clickedoption: option.data("originalindex")
 						};
 						clickcallback(click);
@@ -81,6 +84,11 @@ QuizRenderer = function(topElementSelector) {
 			}
 		}
 
+	}
+
+	this.redrawImage = function() {
+		var ctx = canvas[0].getContext("2d");
+		ctx.drawImage(img,0,0);
 	}
 
 
@@ -99,6 +107,7 @@ QuizRenderer = function(topElementSelector) {
 	this.reveal = function(votes) {
 		revealed = true;
 
+		// determine votes per option
 		for(var i = 0; i < 999; ++i) {
 			var option = $("#option" + i);
 			if(!option.length) {
@@ -113,13 +122,30 @@ QuizRenderer = function(topElementSelector) {
 				var optioncount = $("#optioncount" + i);
 				var count = 0;
 				for(var key in votes) {
-					if(originalidx === votes[key]) {
+					var click = votes[key];
+					if(click.type != "optionclick") {
+						continue;
+					}
+					if(originalidx === click.clickedoption) {
 						count++;
 					}
 				}
 				optioncount.text(count + "");
 			}
 
+		}
+
+
+		// draw image markings
+		if(votes) {
+			for(var key in votes) {
+				var click = votes[key];
+				if(click.type != "imageclick") {
+					continue;
+				}
+
+				that.markImagePosition(click.x, click.y);
+			}
 		}
 	}
 
@@ -184,5 +210,16 @@ QuizUtil = {
 			localStorage.setItem("CrowdQuizId", id);
 		}
 		return id;
+	},
+
+	clickIsRelevant: function(click, question) {
+		if(!question.type || question.type == 0) {
+			// standard type, user has to click an option
+			return click.type == "optionclick";
+		} else if(question.type == 1) {
+			// user has to click a position in an image
+			return click.type == "imageclick";
+		}
+		return false;
 	}
 }
