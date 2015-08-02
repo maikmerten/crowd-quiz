@@ -66,15 +66,21 @@ input.incorrect {
 <button id="questionup" onClick="upQuestion();" data-i18n="questionup"></button>
 <button id="questiondown" onClick="downQuestion();" data-i18n="questiondown"></button>
 <button id="deleteimage" onClick="deleteImage();" data-i18n="removeimage"></button>
+<select id="typeselect" onChange="readQuestionEditor();">
+<option value="0" data-i18n="type0"></option>
+<option value="1" data-i18n="type1"></option>
+</select>
 </div>
 
 
 <div class="editor">
-<textarea id="text" cols="80" onChange="readQuestionEditor();"></textarea><br/>
-<input type="text" id="option0" class="correct" onChange="readQuestionEditor();"/><br/>
-<input type="text" id="option1" class="incorrect" onChange="readQuestionEditor();"/><br/>
-<input type="text" id="option2" class="incorrect" onChange="readQuestionEditor();"/><br/>
-<input type="text" id="option3" class="incorrect" onChange="readQuestionEditor();"/><br/>
+	<textarea id="text" cols="80" onChange="readQuestionEditor();"></textarea><br/>
+	<div id="optioncontainer">
+		<input type="text" id="option0" class="correct" onChange="readQuestionEditor();"/><br/>
+		<input type="text" id="option1" class="incorrect" onChange="readQuestionEditor();"/><br/>
+		<input type="text" id="option2" class="incorrect" onChange="readQuestionEditor();"/><br/>
+		<input type="text" id="option3" class="incorrect" onChange="readQuestionEditor();"/><br/>
+	</div>
 </div>
 
 <p data-i18n="dragimagehere"></p>
@@ -117,30 +123,50 @@ function emptyQuestionEditor() {
 		document.getElementById("option" + i).value = "";
 	}
 	document.getElementById("questionimage").style.display = "none";
+	$("#typeselect").val(0);
 }
 
 function fillQuestionEditor() {
 	emptyQuestionEditor();
-	document.getElementById("text").value = question.text;
-	for(var i = 0; i < question.options.length; ++i) {
-		document.getElementById("option" + i).value = question.options[i];
+	if(question.type) {
+		$("#typeselect").val(question.type);
 	}
+
+	document.getElementById("text").value = question.text;
+	
+	for(var i = 0; question.options && (i < question.options.length); ++i) {
+		$("#option" + i).val(question.options[i]);
+	}
+
+	if(question.type && question.type == 1) {
+		$("#optioncontainer").css("display", "none");
+	} else {
+		$("#optioncontainer").css("display", "initial");
+	}
+
 	if(question.image) {
-		document.getElementById("questionimage").src = question.image;
-		document.getElementById("questionimage").style.display = "initial";
+		$("#questionimage").attr("src", question.image).css("display", "initial");
 	}
 }
 
 function readQuestionEditor() {
+	question.type = $("#typeselect").val();
 	question.text = document.getElementById("text").value;
-	question.options = [];
-	for(var i = 0; document.getElementById("option" + i); ++i) {
-		var value = document.getElementById("option" + i).value;
-		if(value.trim().length > 0) {
-			question.options.push(value);
+
+	if(!question.type || question.type == 0) {
+		question.options = [];
+		for(var i = 0; document.getElementById("option" + i); ++i) {
+			var value = document.getElementById("option" + i).value;
+			if(value.trim().length > 0) {
+				question.options.push(value);
+			}
 		}
+	} else if(question.type == 1) {
+		delete question.options;
 	}
+
 	listQuestions();
+	fillQuestionEditor();
 }
 
 
@@ -213,6 +239,7 @@ function deleteImage() {
 	emptyQuestionEditor();
 	fillQuestionEditor();
 }
+
 
 function loadFile() {
 	var files = document.getElementById("files").files;

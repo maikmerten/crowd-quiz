@@ -73,7 +73,7 @@ socket.on("DiscoveryResponse", function(response) {
 socket.on('QuizQuestion', function(question) {
 	qr.renderQuestion(question, function (click) {
 		if(!QuizUtil.clickIsRelevant(click, question)) {
-			console.log("irrelevant click type: " + click.clicktype);
+			console.log("irrelevant click type: " + click.type);
 			return;
 		}
 

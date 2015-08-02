@@ -17,5 +17,7 @@
 	"textofquestion"	: "Fragetext",
 	"correctanswer"		: "Richtige Antwort",
 	"wronganswer"		: "Falsche Antwort",
-	"appendquiz"		: "Quiz aus der Datei dem aktuellen Quiz anhängen?"
+	"appendquiz"		: "Quiz aus der Datei dem aktuellen Quiz anhängen?",
+	"type0"				: "Benutzer wählen aus Textoptionen",
+	"type1"				: "Benutzer markieren eine Position im Bild"
 }
