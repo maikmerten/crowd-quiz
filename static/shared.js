@@ -42,7 +42,7 @@ QuizRenderer = function(topElementSelector) {
 		}
 
 		// question type 0: Display answer options
-		if(!question.type && question.options && question.options.length) {
+		if((!question.type || question.type == 0) && question.options) {
 			var optionlist = $("<ul>").attr("id", "optionlist");
 			topElem.append(optionlist);
 
