@@ -96,11 +96,11 @@ QuizRenderer = function(topElementSelector) {
 		var canvas = $("#questionimage");
 		var ctx = canvas[0].getContext("2d");
 		ctx.beginPath();
-		ctx.arc(x, y, 3, 0, 2 * Math.PI, false);
-		ctx.fillStyle = 'green';
+		ctx.arc(x, y, 5, 0, 2 * Math.PI, false);
+		ctx.fillStyle = '#ffff3e';
 		ctx.fill();
 		ctx.lineWidth = 2;
-		ctx.strokeStyle = '#003300';
+		ctx.strokeStyle = '#330000';
 		ctx.stroke();
 	}
 
