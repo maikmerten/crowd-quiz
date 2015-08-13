@@ -51,41 +51,45 @@ input.incorrect {
 <body>
 
 <div class="controls">
-<button id="newquestion" onClick="newQuiz();" data-i18n="newquiz"></button>
-<input type="file" id="files" name="files[]" onChange="loadFile();"/>
-<a href="" id="savelink" download="quiz.json" onClick="saveToFile();"><button type="button" data-i18n="savetofile"></button></a>
+	<button id="newquestion" onClick="newQuiz();" data-i18n="newquiz"></button>
+	<input type="file" id="files" name="files[]" onChange="loadFile();"/>
+	<a href="" id="savelink" download="quiz.json" onClick="saveToFile();"><button type="button" data-i18n="savetofile"></button></a>
 </div>
 
 <div>
-<select id="questions" size="10" onChange="onQuestionSelect();"></select>
+	<select id="questions" size="10" onChange="onQuestionSelect();"></select>
 </div>
 
 <div class="controls">
-<button id="newquestion" onClick="newQuestion();" data-i18n="newquestion"></button>
-<button id="removequestion" onClick="removeQuestion();" data-i18n="deletequestion"></button>
-<button id="questionup" onClick="upQuestion();" data-i18n="questionup"></button>
-<button id="questiondown" onClick="downQuestion();" data-i18n="questiondown"></button>
-<button id="deleteimage" onClick="deleteImage();" data-i18n="removeimage"></button>
-<select id="typeselect" onChange="readQuestionEditor();">
-<option value="0" data-i18n="type0"></option>
-<option value="1" data-i18n="type1"></option>
-</select>
+	<button id="newquestion" onClick="newQuestion();" data-i18n="newquestion"></button>
+	<button id="removequestion" onClick="removeQuestion();" data-i18n="deletequestion"></button>
+	<button id="questionup" onClick="upQuestion();" data-i18n="questionup"></button>
+	<button id="questiondown" onClick="downQuestion();" data-i18n="questiondown"></button>
 </div>
 
-
-<div class="editor">
-	<textarea id="text" cols="80" onChange="readQuestionEditor();"></textarea><br/>
-	<div id="optioncontainer">
-		<input type="text" id="option0" class="correct" onChange="readQuestionEditor();"/><br/>
-		<input type="text" id="option1" class="incorrect" onChange="readQuestionEditor();"/><br/>
-		<input type="text" id="option2" class="incorrect" onChange="readQuestionEditor();"/><br/>
-		<input type="text" id="option3" class="incorrect" onChange="readQuestionEditor();"/><br/>
+<div id="editorcontainer">
+	<div class="editor">
+		<select id="typeselect" onChange="readQuestionEditor();" style="margin-bottom:3px">
+			<option value="0" data-i18n="type0"></option>
+			<option value="1" data-i18n="type1"></option>
+		</select>
+		<textarea id="text" cols="80" onChange="readQuestionEditor();"></textarea><br/>
+		<div id="optioncontainer">
+			<input type="text" id="option0" class="correct" onChange="readQuestionEditor();"/><br/>
+			<input type="text" id="option1" class="incorrect" onChange="readQuestionEditor();"/><br/>
+			<input type="text" id="option2" class="incorrect" onChange="readQuestionEditor();"/><br/>
+			<input type="text" id="option3" class="incorrect" onChange="readQuestionEditor();"/><br/>
+		</div>
 	</div>
-</div>
 
-<p data-i18n="dragimagehere"></p>
+	<p data-i18n="dragimagehere"></p>
 
-<img id="questionimage"/>
+	<div id="imageeditor">
+		<button id="deleteimage" onClick="deleteImage();" data-i18n="removeimage" style="margin-bottom:3px"></button>
+		<br/>
+		<img id="questionimage"/>
+	</div>
+<div/>
 
 
 <script src="/jquery.js"></script>
@@ -95,11 +99,12 @@ input.incorrect {
 // JavaScript without nice helpers such as jQuery to ensure this works stand-alone
 
 var questions = [];
-var question = {};
+var question = null;
 
 i18n.init({ fallbackLng: 'en' }, function(t) {
 	// apply i18n and show page
 	$("html").i18n().css("display", "initial");
+	emptyQuestionEditor();
 });
 
 
@@ -118,11 +123,12 @@ function listQuestions() {
 
 
 function emptyQuestionEditor() {
-	document.getElementById("text").value = "";
+	$("#text").val("");
 	for(var i = 0; i < 4; ++i) {
-		document.getElementById("option" + i).value = "";
+		$("#option" + i).val("");
 	}
-	document.getElementById("questionimage").style.display = "none";
+	$("#editorcontainer").css("display", question != null ? "initial" : "none");
+	$("#imageeditor").css("display", "none");
 	$("#typeselect").val(0);
 }
 
@@ -132,7 +138,7 @@ function fillQuestionEditor() {
 		$("#typeselect").val(question.type);
 	}
 
-	document.getElementById("text").value = question.text;
+	$("#text").val(question.text);
 	
 	for(var i = 0; question.options && (i < question.options.length); ++i) {
 		$("#option" + i).val(question.options[i]);
@@ -145,13 +151,14 @@ function fillQuestionEditor() {
 	}
 
 	if(question.image) {
-		$("#questionimage").attr("src", question.image).css("display", "initial");
+		$("#questionimage").attr("src", question.image);
+		$("#imageeditor").css("display", "initial");
 	}
 }
 
 function readQuestionEditor() {
 	question.type = $("#typeselect").val();
-	question.text = document.getElementById("text").value;
+	question.text = $("#text").val();
 
 	if(!question.type || question.type == 0) {
 		question.options = [];
@@ -178,6 +185,7 @@ function onQuestionSelect() {
 
 function newQuiz() {
 	questions = [];
+	question = null;
 	listQuestions();
 	emptyQuestionEditor();
 }
@@ -236,7 +244,6 @@ function downQuestion() {
 
 function deleteImage() {
 	delete question.image;
-	emptyQuestionEditor();
 	fillQuestionEditor();
 }
 
@@ -326,9 +333,8 @@ target.addEventListener("drop", function(e){
 
 			if(question.text) {
 				question.image = canvas.toDataURL("image/jpeg", 0.7);
-				var imgelem = document.getElementById("questionimage");
-				imgelem.src = question.image;
-				imgelem.style.display = "initial";
+				$("#questionimage").attr("src", question.image);
+				$("#imageeditor").css("display", "initial");
 			}
 
 		};
