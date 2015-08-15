@@ -103,7 +103,7 @@ input.incorrect {
 		</div>
 
 		<div id="draghere">
-			<p data-i18n="dragimagehere"></p>
+			<p id="dragheretext" data-i18n="dragimagehere"></p>
 			
 			<div id="imageeditor">
 				<img id="questionimage"/><br/>
@@ -124,7 +124,7 @@ var question = null;
 i18n.init({ fallbackLng: 'en' }, function(t) {
 	// apply i18n and show page
 	$("html").i18n().css("display", "initial");
-	emptyQuestionEditor();
+	updateUI();
 });
 
 
@@ -142,37 +142,24 @@ function listQuestions() {
 }
 
 
-function emptyQuestionEditor() {
-	$("#text").val("");
-	for(var i = 0; i < 4; ++i) {
-		$("#option" + i).val("");
-	}
+function updateUI() {
+	// update editor UI
 	$("#editorcontainer").css("display", question != null ? "initial" : "none");
-	$("#imageeditor").css("display", "none");
-	$("#typeselect").val(0);
-}
+	if(question != null) {
+		$("#typeselect").val(question.type ? question.type : 0);
 
-function fillQuestionEditor() {
-	emptyQuestionEditor();
-	if(question.type) {
-		$("#typeselect").val(question.type);
-	}
+		$("#text").val(question.text);
+		for(var i = 0; $("#option" + i)[0]; ++i) {
+			$("#option" + i).val((question.options && question.options[i]) ? question.options[i] : "");
+		}
 
-	$("#text").val(question.text);
-	
-	for(var i = 0; question.options && (i < question.options.length); ++i) {
-		$("#option" + i).val(question.options[i]);
-	}
+		// hide text options for quesiton type 1
+		$("#optioncontainer").css("display", (question.type && question.type == 1) ? "none" : "initial");
 
-	if(question.type && question.type == 1) {
-		$("#optioncontainer").css("display", "none");
-	} else {
-		$("#optioncontainer").css("display", "initial");
-	}
-
-	if(question.image) {
-		$("#questionimage").attr("src", question.image);
-		$("#imageeditor").css("display", "initial");
+		// set up image editing UI
+		$("#questionimage").attr("src", question.image ? question.image : "");
+		$("#imageeditor").css("display", question.image ? "initial" : "none");
+		$("#dragheretext").css("display", question.image ? "none" : "initial");
 	}
 }
 
@@ -182,8 +169,8 @@ function readQuestionEditor() {
 
 	if(!question.type || question.type == 0) {
 		question.options = [];
-		for(var i = 0; document.getElementById("option" + i); ++i) {
-			var value = document.getElementById("option" + i).value;
+		for(var i = 0; $("#option" + i)[0]; ++i) {
+			var value = $("#option" + i).val();
 			if(value.trim().length > 0) {
 				question.options.push(value);
 			}
@@ -193,21 +180,21 @@ function readQuestionEditor() {
 	}
 
 	listQuestions();
-	fillQuestionEditor();
+	updateUI();
 }
 
 
 function onQuestionSelect() {
 	var selected = document.getElementById("questions").value;
 	question = questions[selected];
-	fillQuestionEditor();
+	updateUI();
 }
 
 function newQuiz() {
 	questions = [];
 	question = null;
 	listQuestions();
-	emptyQuestionEditor();
+	updateUI();
 }
 
 
@@ -219,7 +206,7 @@ function newQuestion() {
 
 	questions[questions.length] = question;
 	listQuestions();
-	fillQuestionEditor();
+	updateUI();
 	document.getElementById("questions").value = questions.length - 1;
 }
 
@@ -228,7 +215,7 @@ function removeQuestion() {
 	var selected = parseInt(document.getElementById("questions").value);
 	questions.splice(selected, 1);
 	listQuestions();
-	emptyQuestionEditor();
+	updateUI();
 }
 
 function upQuestion() {
@@ -242,7 +229,7 @@ function upQuestion() {
 	questions[selected - 1] = question;
 
 	listQuestions();
-	fillQuestionEditor();
+	updateUI();
 	document.getElementById("questions").value = selected - 1;
 }
 
@@ -258,13 +245,13 @@ function downQuestion() {
 	questions[selected + 1] = question;
 
 	listQuestions();
-	fillQuestionEditor();
+	updateUI();
 	document.getElementById("questions").value = selected + 1;
 }
 
 function deleteImage() {
 	delete question.image;
-	fillQuestionEditor();
+	updateUI();
 }
 
 
@@ -299,7 +286,7 @@ function loadFile() {
 	})(files[0]);
 
 	reader.readAsText(files[0], "UTF-8");
-	emptyQuestionEditor();
+	updateUI();
 }
 
 
@@ -353,8 +340,7 @@ target.addEventListener("drop", function(e){
 
 			if(question.text) {
 				question.image = canvas.toDataURL("image/jpeg", 0.7);
-				$("#questionimage").attr("src", question.image);
-				$("#imageeditor").css("display", "initial");
+				updateUI();
 			}
 
 		};
