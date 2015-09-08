@@ -57,6 +57,10 @@ ul#optionlist {
 	padding: 0px;
 }
 
+ul#optionlist li {
+	cursor: pointer;
+}
+
 li.quiz {
 	font-size: 18pt;
 	width: 95%;
