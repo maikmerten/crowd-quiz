@@ -15,6 +15,7 @@ QuizRenderer = function(topElementSelector) {
 
 		if(question.image) {
 			canvas = $("<canvas>");
+			canvas.toggleClass("crosshair", "type" in question && question.type == 1 && clickcallback != null);
 			topElem.append(canvas.attr("id", "questionimage").css("display", "block"));
 			img = new Image();
 			img.onload = function() {

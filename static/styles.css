@@ -120,3 +120,7 @@ li.incorrect.selected {
 	background-image: linear-gradient(to bottom right, rgb(255,50,50), rgb(255,150,150), rgb(255,50,50));
 }
 
+.crosshair {
+	cursor: crosshair;
+}
+
