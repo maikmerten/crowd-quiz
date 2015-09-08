@@ -70,6 +70,7 @@ QuizRenderer = function(topElementSelector) {
 				option.append(count);
 
 				if(clickcallback) {
+					option.addClass("pointer");
 					option.click(function() {
 						if(revealed) return;
 
