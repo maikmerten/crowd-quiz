@@ -19,5 +19,6 @@
 	"wronganswer"		: "Wrong answer",
 	"appendquiz"		: "Append the quiz loaded from file to the current quiz?",
 	"type0"				: "Users choose between text options",
-	"type1"				: "Users mark positions in an image"
+	"type1"				: "Users mark positions in an image",
+	"type2"				: "Survey"
 }

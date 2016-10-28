@@ -93,6 +93,7 @@ input.incorrect {
 		<select id="typeselect" onChange="readQuestionEditor();">
 			<option value="0" data-i18n="type0"></option>
 			<option value="1" data-i18n="type1"></option>
+			<option value="2" data-i18n="type2"></option>
 		</select>
 		<textarea id="text" cols="80" onChange="readQuestionEditor();"></textarea><br/>
 		<div id="optioncontainer">
@@ -168,7 +169,7 @@ function readQuestionEditor() {
 	question.type = $("#typeselect").val();
 	question.text = $("#text").val();
 
-	if(!question.type || question.type == 0) {
+	if(!question.type || question.type == 0 || question.type == 2) {
 		question.options = [];
 		for(var i = 0; $("#option" + i)[0]; ++i) {
 			var value = $("#option" + i).val();

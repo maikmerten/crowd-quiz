@@ -8,8 +8,11 @@ QuizRenderer = function(topElementSelector) {
 	var revealed = false;
 	var canvas = null;
 	var img = null;
+	var question = null;
 	
 	this.renderQuestion = function(question, clickcallback) {
+		this.question = question;
+		
 		revealed = false;
 		topElem.empty().append($("<div>").attr("id", "questiontext").text(question.text));
 
@@ -42,8 +45,8 @@ QuizRenderer = function(topElementSelector) {
 			}
 		}
 
-		// question type 0: Display answer options
-		if((!question.type || question.type == 0) && question.options) {
+		// question type 0 and 2: Display answer options
+		if((!question.type || question.type == 0 || question.type == 2) && question.options) {
 			var optionlist = $("<ul>").attr("id", "optionlist");
 			topElem.append(optionlist);
 
@@ -55,15 +58,22 @@ QuizRenderer = function(topElementSelector) {
 			// display answering options in random order
 			var permute = [];
 			for(var i = 0; i < question.options.length; ++i) {
+				var randomizePosition = question.type != 2;
 				var idx = 0;
-				while(true) {
-					var rand = Math.floor(Math.random() * question.options.length);
-					if(!permute[rand]) {
-						idx = rand;
-						permute[idx] = true;
-						break;
+				
+				if(randomizePosition) {
+					while(true) {
+						var rand = Math.floor(Math.random() * question.options.length);
+						if(!permute[rand]) {
+							idx = rand;
+							permute[idx] = true;
+							break;
+						}
 					}
+				} else {
+					idx = i;
 				}
+
 
 				var option = $("#option" + idx).text(question.options[i]).data("originalindex", i);
 				var count = $("<span>").attr("id", "optioncount" + idx).toggleClass("optioncount", true);
@@ -117,8 +127,10 @@ QuizRenderer = function(topElementSelector) {
 			}
 
 			var originalidx = option.data("originalindex");
-			option.toggleClass("correct", originalidx == 0);
-			option.toggleClass("incorrect", originalidx != 0);
+			var correctOption = originalidx == 0 || this.question.type == 2;
+
+			option.toggleClass("correct", correctOption);
+			option.toggleClass("incorrect", !correctOption);
 
 			if(votes) {
 				var optioncount = $("#optioncount" + i);
@@ -215,7 +227,7 @@ QuizUtil = {
 	},
 
 	clickIsRelevant: function(click, question) {
-		if(!question.type || question.type == 0) {
+		if(!question.type || question.type == 0 || question.type == 2) {
 			// standard type, user has to click an option
 			return click.type == "optionclick";
 		} else if(question.type == 1) {
