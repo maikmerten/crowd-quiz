@@ -58,6 +58,10 @@ div.editor div#draghere {
 }
 
 
+input.neutral {
+	background-color: rgb(250,250,250);
+}
+
 input.correct {
 	background-color: rgb(200,255,200);
 }
@@ -96,12 +100,7 @@ input.incorrect {
 			<option value="2" data-i18n="type2"></option>
 		</select>
 		<textarea id="text" cols="80" onChange="readQuestionEditor();"></textarea><br/>
-		<div id="optioncontainer">
-			<input type="text" id="option0" class="correct" onChange="readQuestionEditor();"/><br/>
-			<input type="text" id="option1" class="incorrect" onChange="readQuestionEditor();"/><br/>
-			<input type="text" id="option2" class="incorrect" onChange="readQuestionEditor();"/><br/>
-			<input type="text" id="option3" class="incorrect" onChange="readQuestionEditor();"/><br/>
-		</div>
+		<div id="optioncontainer"></div>
 
 		<div id="draghere">
 			<p id="dragheretext" data-i18n="dragimagehere"></p>
@@ -144,6 +143,38 @@ function listQuestions() {
 }
 
 
+function createOptions() {
+	let questionHasOptions = function() {
+		if(question == null) return false;
+		return question.type != 1;
+	}
+
+	let createOptionField = function(i, text) {
+		let field = $("<input type='text' id='option" + i + "'/>");
+		field.on("change", readQuestionEditor);
+		let clazz = "neutral";
+		if(!question.type || question.type == 0) clazz = i == 0 ? "correct" : "incorrect";
+		field.toggleClass(clazz, true);
+		field.val(text);
+		return field;
+	}
+
+	let container = $("#optioncontainer");
+	container.empty();
+
+	if(questionHasOptions()) {
+		let numOptions = 0;
+		if(question.options) numOptions = question.options.length;
+		for(let i = 0; i < numOptions; ++i) {
+			let text = question.options[i];
+			let input = createOptionField(i, text);
+			container.append(input);
+		}
+		container.append(createOptionField(numOptions), "");
+	}
+}
+
+
 function updateUI() {
 	// update editor UI
 	$("#editorcontainer").css("display", question != null ? "initial" : "none");
@@ -155,8 +186,7 @@ function updateUI() {
 			$("#option" + i).val((question.options && question.options[i]) ? question.options[i] : "");
 		}
 
-		// hide text options for quesiton type 1
-		$("#optioncontainer").css("display", (question.type && question.type == 1) ? "none" : "initial");
+		createOptions();
 
 		// set up image editing UI
 		$("#questionimage").attr("src", question.image ? question.image : "");
@@ -203,7 +233,8 @@ function newQuiz() {
 function newQuestion() {
 	question = {
 		"text" : i18n.t("textofquestion"),
-		"options" : [ i18n.t("correctanswer"), i18n.t("wronganswer") + " 1", i18n.t("wronganswer") + " 2", i18n.t("wronganswer") + " 3" ]
+		"options" : [ i18n.t("correctanswer"), i18n.t("wronganswer") + " 1", i18n.t("wronganswer") + " 2", i18n.t("wronganswer") + " 3" ],
+		"type" : 0
 	}
 
 	questions[questions.length] = question;
