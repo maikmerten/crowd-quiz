@@ -5,6 +5,7 @@
 <meta charset="utf-8"/>
 <title>CrowdQuiz</title>
 <link rel="stylesheet" type="text/css" href="styles.css"/>
+<link rel="stylesheet alternate" type="text/css" href="styles-dark.css"/>
 </head>
 <body>
 
@@ -23,6 +24,7 @@ var socket = io();
 var quizinstance = "quiz1";
 var discover = 1;
 var qr = new QuizRenderer("#centercol");
+var stylemanager = new StyleManager();
 
 i18n.init({ fallbackLng: 'en' }, function(t) {
 	// apply i18n and show page

@@ -1,3 +1,19 @@
+StyleManager = function() {
+	$(document).keypress(function(e) {
+		if(e.which == 115) {
+			$("link").each(function(index) {
+				let elem = $(this);
+				if(elem.attr("rel").trim() == "stylesheet") {
+					elem.attr("rel", "stylesheet alternate");
+				} else {
+					elem.attr("rel", "stylesheet");
+				}
+			});
+		}
+	});
+}
+
+
 QuizRenderer = function(topElementSelector) {
 	var topElem = $(topElementSelector);
 	if(!topElem.length) {
