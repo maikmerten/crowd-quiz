@@ -18,6 +18,7 @@
 	<button id="next" data-i18n="nextquestion"></button>
 	<button id="reveal" data-i18n="revealanswer"></button>
 	<span id="progress"></span>
+	<span id="quizcode"></span>
 	<span id="answercount"></span>
 </div>
 
@@ -31,6 +32,7 @@ var socket = io();
 var answers = {};
 var quizname = "Quiz";
 var quizinstance = "quiz1";
+var quizcode = null;
 var qr = new QuizRenderer("#centercol");
 var qh = new QuizHolder([]);
 
@@ -44,10 +46,12 @@ i18n.init({ fallbackLng: 'en' }, function(t) {
 
 
 function openQuiz() {
-	quizname = prompt(i18n.t("enterquizname"), "Quiz-" + ((Math.random() * 65536)|0));
+	quizname = "Quiz-" + ((Math.random() * 65536)|0);
 	quizinstance = "quiz-" + QuizUtil.randomString();
+	quizcode = Math.floor(Math.random() * 100000);
 
 	socket.emit("JoinRoom", ["quizmaster." + quizinstance, "quizmaster"]);
+	updateUI();
 }
 
 
@@ -71,6 +75,7 @@ document.getElementById('files').addEventListener('change', handleFileSelect, fa
 
 
 function updateUI() {
+	$("#quizcode").text(quizcode != null ? i18n.t("quizcode") + ": " + quizcode : "");
 	$("#progress").text(qh.size() > 0 ? "(" + (qh.position() + 1) + "/" + qh.size() + ")" : "");
 	$("#prev").attr("disabled", !qh.hasPrev());
 	$("#next").attr("disabled", !qh.hasNext());
@@ -159,6 +164,11 @@ socket.on("RequestQuestion", function(request) {
 
 
 socket.on("DiscoveryRequest", function(request) {
+	var code = request.code;
+	if(!code || code.trim() != quizcode) {
+		return;
+	}
+
 	var response = {
 		"quizname" : quizname,
 		"quizinstance" : quizinstance,

@@ -21,7 +21,7 @@
 <script src="/shared.js"></script>
 <script>
 var socket = io();
-var quizinstance = "quiz1";
+var quizinstance = null;
 var discover = 1;
 var qr = new QuizRenderer("#centercol");
 var stylemanager = new StyleManager();
@@ -29,12 +29,11 @@ var stylemanager = new StyleManager();
 i18n.init({ fallbackLng: 'en' }, function(t) {
 	// apply i18n and show page
 	$("html").i18n().css("display", "initial");
+	discoverQuizzes();
 });
 
 
 socket.emit("JoinRoom", ["clients"]);
-discoverQuizzes();
-
 
 function requestQuestion() {
 	var request = {
@@ -46,7 +45,21 @@ function requestQuestion() {
 
 
 function discoverQuizzes() {
-	socket.emit("DiscoveryRequest");
+	var reloadfunc = function() {
+			if(quizinstance == null) {
+				location.reload();
+			}
+	};
+	var code = prompt(i18n.t("entercode"));
+	window.setTimeout(reloadfunc, 3000);
+
+	if(code != null) {
+		var request = {
+			"code" : code
+		};
+		console.log(request);
+		socket.emit("DiscoveryRequest", request);
+	}
 }
 
 // display discovered quizzes
@@ -54,7 +67,13 @@ socket.on("DiscoveryResponse", function(response) {
 	if(!discover) {
 		return;		// ignore discovery messages when not discovering
 	}
+	discover = 0;
+	quizinstance = response.quizinstance;
+	socket.emit("JoinRoom", ["clients." + quizinstance]);
+	$("#questiontext").text(i18n.t("waitforquestion"));
+	requestQuestion();
 
+/*
 	var li = $("<li>");
 	li.text(response.quizname);
 	li.toggleClass("quiz", true);
@@ -68,6 +87,7 @@ socket.on("DiscoveryResponse", function(response) {
 	});
 
 	$("#optionlist").append(li);
+*/
 
 });
 

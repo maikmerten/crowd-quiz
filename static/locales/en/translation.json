@@ -20,5 +20,7 @@
 	"appendquiz"		: "Append the quiz loaded from file to the current quiz?",
 	"type0"				: "Users choose between text options",
 	"type1"				: "Users mark positions in an image",
-	"type2"				: "Survey"
+	"type2"				: "Survey",
+	"entercode"			: "Please enter the quiz-code",
+	"quizcode"			: "Quiz-code"
 }

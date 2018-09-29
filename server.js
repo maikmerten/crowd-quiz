@@ -67,8 +67,9 @@ io.on('connection', function(socket){
 
 
 	// deliver discovery requests from clients to quizmasters
-	socket.on("DiscoveryRequest", function() {
+	socket.on("DiscoveryRequest", function(request) {
 		var request = {
+			"code" : request.code,
 			"clientid" : socket.id
 		};
 		io.in("quizmaster").emit("DiscoveryRequest", request);

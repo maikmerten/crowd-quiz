@@ -20,5 +20,7 @@
 	"appendquiz"		: "Quiz aus der Datei dem aktuellen Quiz anhängen?",
 	"type0"				: "Benutzer wählen aus Textoptionen",
 	"type1"				: "Benutzer markieren eine Position im Bild",
-	"type2"				: "Umfrage"
+	"type2"				: "Umfrage",
+	"entercode"			: "Bitte geben Sie den Quiz-Code ein",
+	"quizcode"			: "Quiz-code"
 }
