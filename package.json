@@ -1,16 +1,16 @@
 {
-  "name": "CrowdQuiz",
-  "version": "0.0.1",
-  "description": "An app to conduct quizzes in class rooms",
-  "license" : "MIT",
-  "dependencies": {
-     "express": "~4.12.3",
-     "socket.io": "~1.4.5",
-     "basic-auth": "~1.0.1",
-     "yargs": "~3.9.0"	
-  },
-  "repository": {
-     "type" : "git",
-     "url" : "https://github.com/maikmerten/crowd-quiz.git"
-  }
+   "name": "CrowdQuiz",
+   "version": "0.0.1",
+   "description": "An app to conduct quizzes in class rooms",
+   "license": "MIT",
+   "dependencies": {
+      "basic-auth": "~1.0.1",
+      "express": "^4.16.3",
+      "socket.io": "~2.1.1",
+      "yargs": "~3.9.0"
+   },
+   "repository": {
+      "type": "git",
+      "url": "https://github.com/maikmerten/crowd-quiz.git"
+   }
 }
