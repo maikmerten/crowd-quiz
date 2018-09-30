@@ -31,7 +31,6 @@
 <script>
 var socket = io();
 var answers = {};
-var quizname = "Quiz";
 var quizinstance = "quiz1";
 var quizcode = null;
 var qr = new QuizRenderer("#centercol");
@@ -47,12 +46,10 @@ i18n.init({ fallbackLng: 'en' }, function(t) {
 
 
 function openQuiz() {
-	quizname = "Quiz-" + ((Math.random() * 65536)|0);
 	quizinstance = "quiz-" + QuizUtil.randomString();
-	quizcode = Math.floor(Math.random() * 100000);
 
 	socket.emit("JoinRoom", ["quizmaster." + quizinstance, "quizmaster"]);
-	updateUI();
+	socket.emit("RequestQuizCode", {"quizinstance" : quizinstance});
 }
 
 
@@ -163,6 +160,10 @@ socket.on("RequestQuestion", function(request) {
 	socket.emit("QuizQuestion", questionEnvelope);
 });
 
+socket.on("RequestQuizCodeResponse", function(response) {
+	quizcode = response.quizcode;
+	updateUI();
+});
 
 socket.on("DiscoveryRequest", function(request) {
 	var code = request.code;
@@ -171,7 +172,6 @@ socket.on("DiscoveryRequest", function(request) {
 	}
 
 	var response = {
-		"quizname" : quizname,
 		"quizinstance" : quizinstance,
 		"recipient" : request.clientid
 	};

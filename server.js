@@ -5,6 +5,8 @@ var io = require('socket.io')(http);
 var argv = require('yargs').argv;
 var auth = require('./auth');
 
+var quizcodes = [];
+
 if(argv.username && argv.password) {
 	auth.addAdmin(argv.username, argv.password);
 } else {
@@ -112,6 +114,21 @@ io.on('connection', function(socket){
 	// forward correct option to clients
 	socket.on("RevealCorrect", function(revealMsg) {
 		io.in("clients." + revealMsg.quizinstance).emit("RevealCorrect");
+	});
+
+
+	socket.on("RequestQuizCode", function(request) {
+		var code = 1337;
+		do {
+			code = Math.floor(Math.random() * 100000);
+		} while(quizcodes.includes(code));
+
+		quizcodes.unshift(code);
+		while(quizcodes.length > 100) {
+			quizcodes.pop();
+		}
+
+		socket.emit("RequestQuizCodeResponse", {"quizcode" : "" + code});
 	});
 
 	socket.on("pong", function(msg) {
