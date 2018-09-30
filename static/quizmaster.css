@@ -1,0 +1,16 @@
+div#controls {
+	position: fixed;
+	width: 100%;
+	bottom: 0px;
+	padding: 10px;
+	background-color: rgb(220, 220, 220);
+}
+
+span#quizcode {
+	margin-left:10em;
+}
+
+span#answercount {
+	position: fixed;
+	right: 10px;
+}

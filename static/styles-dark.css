@@ -16,19 +16,6 @@ div#centercol {
 	margin: auto;
 }
 
-div#controls {
-	position: fixed;
-	width: 100%;
-	bottom: 0px;
-	padding: 10px;
-	background-color: rgb(220, 220, 220);
-}
-
-span#answercount {
-	position: fixed;
-	right: 10px;
-}
-
 div#questiontext {
 	font-size: 22pt;
 	text-align: center;
