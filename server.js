@@ -107,7 +107,7 @@ io.on('connection', function(socket){
 	socket.on("QuizAnswer", function(answer) {
 		// determine number of clients for this quiz
 		var room = io.sockets.adapter.rooms["clients." + answer.quizinstance];
-		answer.totalClients = Object.keys(room).length;
+		answer.totalClients = room ? Object.keys(room).length : 1;
 		io.in("quizmaster." + answer.quizinstance).emit("QuizAnswer", answer);
 	});
 
