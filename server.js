@@ -61,6 +61,7 @@ io.on('connection', function(socket){
 	console.log('a user connected');
 
 	socket.on('JoinRoom', function(rooms) {
+		if(!rooms || !rooms.length) return;
 		console.log("client joins room(s) " + rooms);
 		for(var i = 0; i < rooms.length; ++i) {
 			socket.join(rooms[i]);
@@ -70,6 +71,7 @@ io.on('connection', function(socket){
 
 	// deliver discovery requests from clients to quizmasters
 	socket.on("DiscoveryRequest", function(request) {
+		if(!request || !request.code) return;
 		var request = {
 			"code" : request.code,
 			"clientid" : socket.id
@@ -77,13 +79,16 @@ io.on('connection', function(socket){
 		io.in("quizmaster").emit("DiscoveryRequest", request);
 	});
 
-	// diliver discovery responses from quizmasters to client
+	// deliver discovery responses from quizmasters to client
 	socket.on("DiscoveryResponse", function(response) {
+		if(!response) return;
 		io.in(response.recipient).emit("DiscoveryResponse", response);
 	});
 
 	// distribute questions to quiz clients
 	socket.on("QuizQuestion", function(questionEnvelope) {
+		if(!questionEnvelope || !questionEnvelope.question || !questionEnvelope.quizinstance) return;
+
 		var question = questionEnvelope.question;
 		var quizinstance = questionEnvelope.quizinstance;
 
@@ -98,6 +103,7 @@ io.on('connection', function(socket){
 	});
 
 	socket.on("RequestQuestion", function(request) {
+		if(!request) return;
 		console.log("question requested, quizinstance " + request.quizinstance);
 		request.clientid = socket.id;
 		io.in("quizmaster." + request.quizinstance).emit("RequestQuestion", request);
@@ -105,6 +111,7 @@ io.on('connection', function(socket){
 
 	// forward answers to quiz master
 	socket.on("QuizAnswer", function(answer) {
+		if(!answer) return;
 		// determine number of clients for this quiz
 		var room = io.sockets.adapter.rooms["clients." + answer.quizinstance];
 		answer.totalClients = room ? Object.keys(room).length : 1;
@@ -113,6 +120,7 @@ io.on('connection', function(socket){
 
 	// forward correct option to clients
 	socket.on("RevealCorrect", function(revealMsg) {
+		if(!revealMsg || !revealMsg.quizinstance) return;
 		io.in("clients." + revealMsg.quizinstance).emit("RevealCorrect");
 	});
 
