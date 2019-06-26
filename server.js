@@ -103,7 +103,7 @@ io.on('connection', function(socket){
 	});
 
 	socket.on("RequestQuestion", function(request) {
-		if(!request) return;
+		if(!request || !request.quizinstance) return;
 		console.log("question requested, quizinstance " + request.quizinstance);
 		request.clientid = socket.id;
 		io.in("quizmaster." + request.quizinstance).emit("RequestQuestion", request);
@@ -111,7 +111,7 @@ io.on('connection', function(socket){
 
 	// forward answers to quiz master
 	socket.on("QuizAnswer", function(answer) {
-		if(!answer) return;
+		if(!answer || !answer.quizinstance) return;
 		// determine number of clients for this quiz
 		var room = io.sockets.adapter.rooms["clients." + answer.quizinstance];
 		answer.totalClients = room ? Object.keys(room).length : 1;
