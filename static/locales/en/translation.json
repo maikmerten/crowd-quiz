@@ -22,5 +22,7 @@
 	"type1"				: "Users mark positions in an image",
 	"type2"				: "Survey",
 	"entercode"			: "Please enter the quiz-code",
-	"quizcode"			: "Quiz-code"
+	"quizcode"			: "Quiz-code",
+	"answers"			: "answers",
+	"answer"			: "answer"
 }

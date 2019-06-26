@@ -22,5 +22,7 @@
 	"type1"				: "Benutzer markieren eine Position im Bild",
 	"type2"				: "Umfrage",
 	"entercode"			: "Bitte geben Sie den Quiz-Code ein",
-	"quizcode"			: "Quiz-code"
+	"quizcode"			: "Quiz-code",
+	"answers"			: "Antworten",
+	"answer"			: "Antwort"
 }

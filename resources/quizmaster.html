@@ -135,8 +135,9 @@ socket.on("QuizAnswer", function(answer) {
 	answers[answer.from] = answer.click;
 
 	var count = Object.keys(answers).length;
-	var percentage = Math.min(Math.floor((count / answer.totalClients) * 100), 100);
-	$("#answercount").text( count + " | " + percentage + "%");
+	//var percentage = Math.min(Math.floor((count / answer.totalClients) * 100), 100);
+	//$("#answercount").text( count + " | " + percentage + "%");
+	$("#answercount").text( count + " " + i18n.t(count > 1 ? "answers" : "answer"));
 });
 
 // serve question request for clients that connected late
