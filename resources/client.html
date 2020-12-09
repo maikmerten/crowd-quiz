@@ -57,7 +57,6 @@ function discoverQuizzes() {
 		var request = {
 			"code" : code
 		};
-		console.log(request);
 		socket.emit("DiscoveryRequest", request);
 	}
 }
@@ -115,13 +114,13 @@ socket.on('QuizQuestion', function(question) {
 });
 
 // show correct answer to question
-socket.on("RevealCorrect", function() {
-	qr.reveal();
+socket.on("RevealCorrect", function(answers) {
+	qr.reveal(answers);
 });
 
 socket.on('ping', function(data){
 	socket.emit('pong', data);
-});    
+});
 
 
 </script>

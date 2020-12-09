@@ -60,10 +60,10 @@ function handleFileSelect(evt) {
 
 	// Closure to capture the file information.
 	reader.onload = (function (theFile) {
-        	return function (e) { 
+			return function (e) { 
 				qh = new QuizHolder(JSON.parse(e.target.result));
 				sendQuestion();
-        	};
+			};
 	})(f);
 
 	// Read in JSON as a data URL.
@@ -104,7 +104,7 @@ $("#prev").click(function() {
 	qh.prev();
 	sendQuestion();
 });
-     
+
 $("#next").click(function() {
 	qh.next();
 	sendQuestion();
@@ -115,12 +115,16 @@ $("#reveal").click(function() {
 		return;
 	}
 
+	// remove voter information now that it is not needed any more
+	var answers_masked = Object.keys(answers).map(key=>answers[key]);
+
 	var revealMsg = {
-		"quizinstance" : quizinstance
+		"quizinstance" : quizinstance,
+		"answers": answers_masked
 	};
 
 	socket.emit("RevealCorrect", revealMsg);
-	qr.reveal(answers);
+	qr.reveal(answers_masked);
 	updateUI();
 });
 
