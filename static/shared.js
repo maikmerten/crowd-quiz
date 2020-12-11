@@ -41,10 +41,10 @@ QuizRenderer = function(topElementSelector) {
 				canvas.attr("width", img.width).attr("height", img.height);
 				var ctx = canvas[0].getContext("2d");
 				ctx.drawImage(img,0,0);
-			};			
+			};
 			img.src = question.image;
 
-			if(clickcallback) {
+			if(clickcallback && question.type == 1) {
 				canvas.click(function(evt) {
 					if(revealed) return;
 
@@ -52,7 +52,6 @@ QuizRenderer = function(topElementSelector) {
 					var y = evt.pageY - canvas[0].offsetTop;
 
 					var click = {
-						type: "imageclick",
 						x: x,
 						y: y
 					};
@@ -135,46 +134,33 @@ QuizRenderer = function(topElementSelector) {
 	this.reveal = function(votes) {
 		revealed = true;
 
-		// determine votes per option
-		for(var i = 0; i < 999; ++i) {
-			var option = $("#option" + i);
-			if(!option.length) {
-				break;
+		if(this.question.type==1){
+			// draw image markings
+			for(var click of votes) {
+				that.markImagePosition(click.x, click.y);
 			}
+		}else{
+			// determine votes per option
+			for(var i = 0; i < 999; ++i) {
+				var option = $("#option" + i);
+				if(!option.length) {
+					break;
+				}
 
-			var originalidx = option.data("originalindex");
-			var correctOption = originalidx == 0 || this.question.type == 2;
+				var originalidx = option.data("originalindex");
+				var correctOption = originalidx == 0 || this.question.type == 2;
 
-			option.toggleClass("correct", correctOption);
-			option.toggleClass("incorrect", !correctOption);
+				option.toggleClass("correct", correctOption);
+				option.toggleClass("incorrect", !correctOption);
 
-			if(votes) {
 				var optioncount = $("#optioncount" + i);
 				var count = 0;
-				for(var key in votes) {
-					var click = votes[key];
-					if(click.type != "optionclick") {
-						continue;
-					}
+				for(var click of votes) {
 					if(originalidx === click.clickedoption) {
 						count++;
 					}
 				}
 				optioncount.text(count + "");
-			}
-
-		}
-
-
-		// draw image markings
-		if(votes) {
-			for(var key in votes) {
-				var click = votes[key];
-				if(click.type != "imageclick") {
-					continue;
-				}
-
-				that.markImagePosition(click.x, click.y);
 			}
 		}
 	}
@@ -245,10 +231,10 @@ QuizUtil = {
 	clickIsRelevant: function(click, question) {
 		if(!question.type || question.type == 0 || question.type == 2) {
 			// standard type, user has to click an option
-			return click.type == "optionclick";
+			return click.hasOwnProperty("clickedoption");
 		} else if(question.type == 1) {
 			// user has to click a position in an image
-			return click.type == "imageclick";
+			return click.hasOwnProperty("x") && click.hasOwnProperty("y");
 		}
 		return false;
 	}

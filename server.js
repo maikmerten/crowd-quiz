@@ -121,7 +121,7 @@ io.on('connection', function(socket){
 	// forward correct option to clients
 	socket.on("RevealCorrect", function(revealMsg) {
 		if(!revealMsg || !revealMsg.quizinstance) return;
-		io.in("clients." + revealMsg.quizinstance).emit("RevealCorrect");
+		io.in("clients." + revealMsg.quizinstance).emit("RevealCorrect", revealMsg.answers);
 	});
 
 
