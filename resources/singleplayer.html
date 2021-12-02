@@ -1,0 +1,113 @@
+<!doctype html>
+<html style="display:none">
+<head>
+<meta http-equiv="x-ua-compatible" content="IE=Edge"/> 
+<meta charset="utf-8"/>
+<title>CrowdQuiz - Single Player</title>
+<link rel="stylesheet" type="text/css" href="styles.css"/>
+<link rel="stylesheet" type="text/css" href="quizmaster.css"/>
+</head>
+<body>
+
+<div id="centercol">
+	<div id="questiontext" data-i18n="noquizloaded"></div>
+</div>
+
+<div id="controls">
+	<input type="file" id="files" name="files[]" />
+	<button id="prev" data-i18n="prevquestion"></button>
+	<button id="next" data-i18n="nextquestion"></button>
+	<button id="reveal" data-i18n="revealanswer"></button>
+	<span id="progress"></span>
+</div>
+
+
+<script src="/jquery.js"></script>
+<script src="/i18next.js"></script>
+<script src="/shared.js"></script>
+<script>
+var answers = {};
+var quizinstance = "quiz1";
+var qr = new QuizRenderer("#centercol");
+var qh = new QuizHolder([]);
+
+i18n.init({ fallbackLng: 'en' }, function(t) {
+	// apply i18n and show page
+	$("html").i18n().css("display", "initial");
+	updateUI();
+	openQuiz();
+});
+
+
+
+function openQuiz() {
+	quizinstance = "quiz-" + QuizUtil.randomString();
+}
+
+
+function handleFileSelect(evt) {
+	var files = evt.target.files; // FileList object
+	var f = files[0];
+	var reader = new FileReader();
+
+	// Closure to capture the file information.
+	reader.onload = (function (theFile) {
+			return function (e) { 
+				qh = new QuizHolder(JSON.parse(e.target.result));
+				sendQuestion();
+			};
+	})(f);
+
+	// Read in JSON as a data URL.
+	reader.readAsText(f, 'UTF-8');
+}
+document.getElementById('files').addEventListener('change', handleFileSelect, false);
+
+
+function updateUI() {
+	$("#progress").text(qh.size() > 0 ? "(" + (qh.position() + 1) + "/" + qh.size() + ")" : "");
+	$("#prev").attr("disabled", !qh.hasPrev());
+	$("#next").attr("disabled", !qh.hasNext());
+	$("#reveal").attr("disabled", qh.size() < 1 || qr.isRevealed());
+}
+
+
+function sendQuestion() {
+	var question = qh.current();
+
+	// reset question-related state
+	answers = {};
+
+	qr.renderQuestion(question);
+	updateUI();
+}
+
+
+$("#prev").click(function() {
+	qh.prev();
+	sendQuestion();
+});
+
+$("#next").click(function() {
+	qh.next();
+	sendQuestion();
+});
+
+$("#reveal").click(function() {
+	if(qr.isRevealed()) {
+		return;
+	}
+
+	// remove voter information now that it is not needed any more
+	var answers_masked = Object.keys(answers).map(key=>answers[key]);
+
+	qr.reveal(answers_masked);
+	updateUI();
+});
+
+
+
+</script>
+
+</body>
+</html>

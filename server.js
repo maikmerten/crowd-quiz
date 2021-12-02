@@ -49,6 +49,10 @@ app.get('/editor', function(req, res){
 	res.sendFile(__dirname + '/resources/editor.html');
 });
 
+app.get('/singleplayer', function(req, res){
+	res.sendFile(__dirname + '/resources/singleplayer.html');
+});
+
 app.get('/jquery.js', function(req, res){
 	res.sendFile(__dirname + '/resources/jquery-1.11.1' + minjs + '.js');
 });
