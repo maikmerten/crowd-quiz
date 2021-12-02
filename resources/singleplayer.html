@@ -6,6 +6,7 @@
 <title>CrowdQuiz - Single Player</title>
 <link rel="stylesheet" type="text/css" href="styles.css"/>
 <link rel="stylesheet" type="text/css" href="quizmaster.css"/>
+<style>span.optioncount{ display:none } /* hide number of votes for options */</style>
 </head>
 <body>
 
@@ -78,7 +79,17 @@ function sendQuestion() {
 	// reset question-related state
 	answers = {};
 
-	qr.renderQuestion(question);
+	qr.renderQuestion(question, function (click) {
+		if(!QuizUtil.clickIsRelevant(click, question)) {
+			console.log("irrelevant click type: " + click.type);
+			return;
+		}
+
+		if("x" in click && "y" in click) {
+			qr.redrawImage();
+			qr.markImagePosition(click.x, click.y);
+		}
+	});
 	updateUI();
 }
 
