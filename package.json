@@ -5,8 +5,8 @@
    "license": "MIT",
    "dependencies": {
       "basic-auth": "~2.0.1",
-      "express": "^4.17.1",
-      "socket.io": "~3.0.4",
+      "express": "^4.19.2",
+      "socket.io": "~4.7.5",
       "yargs": "~16.2.0"
    },
    "repository": {
